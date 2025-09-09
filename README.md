@@ -81,24 +81,45 @@ duck help
 
 ---
 
-## � プロジェクト構成
+## 📁 プロジェクト構成
 
 以下は本ツールの代表的なディレクトリ/ファイル構成例です。
 
-
-## 🧪 テスト実行
-
-本リポジトリは Gradle を使用し、要求に合わせ `/test` ディレクトリをテストソースとして設定しています。
-
-テスト起動:
-
-```bash
-./gradlew test   # (gradle wrapper 未生成の場合は `gradle test`)
+```
+Commit-Duck/
+├─ README.md
+├─ build.gradle         # Gradle ビルド設定
+├─ settings.gradle      # Gradle プロジェクト設定
+├─ duck                 # macOS/Linux 用コマンド (シェルスクリプト実行エントリ)
+├─ duck.bat             # Windows 用コマンド (バッチ実行エントリ)
+└─ src/
+   ├─ main/             # メインソースコード
+   │  ├─ DuckCli.java   # CLI エントリーポイント / コマンド分岐
+   │  ├─ DuckState.java # 状態(コミット数/ステージ)の読み書き管理
+   │  ├─ Evolution.java # コミット数→進化段階(ステージ)ロジック
+   │  └─ GitUtils.java  # Git コミット数取得など Git 関連ユーティリティ
+   └─ test/             # テストコード
+      ├─ DuckCliTest.java      # CLI機能のテスト
+      ├─ DuckStateTest.java    # 状態管理のテスト
+      ├─ EvolutionTest.java    # 進化ロジックのテスト
+      └─ GitUtilsTest.java     # Git操作のテスト
 ```
 
-`build/reports/tests/test/index.html` をブラウザで開くと結果を確認できます。
+### ビルド・実行方法
 
----
+```bash
+# プロジェクトのビルド
+gradle build
+
+# テスト実行
+gradle test
+
+# クリーンビルド
+gradle clean build
+```
+
+Java の実行可能ファイルは `build/classes/java/main` に生成されます。`duck` / `duck.bat` から `java` コマンドで上記クラスを呼び出す想定です。
+
 ```
 Commit-Duck/
 ├─ README.md
@@ -155,7 +176,7 @@ stage=TEEN
 - 各リポジトリに独立したアヒルが存在します。
 - `.duck` ディレクトリは `.gitignore` することを推奨します。
 - `git` コマンドが利用可能な環境で動作します。
-- Java 11+ が必要です。
+- **Java 17+** が必要です（Gradle toolchain 設定済み）。
 
 ---
 
