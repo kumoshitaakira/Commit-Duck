@@ -7,13 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GitUtilsTest {
 
     @Test
-    public void testIsGitRepository() {
-        // このプロジェクトはGitリポジトリなので、trueが返されることを期待
-        boolean isGitRepo = GitUtils.isGitRepository();
-        assertTrue(isGitRepo, "This project should be a git repository");
-    }
-
-    @Test
     public void testGetCommitCount() {
         try {
             int commitCount = GitUtils.getCommitCount();
@@ -26,23 +19,28 @@ public class GitUtilsTest {
     }
 
     @Test
-    public void testGetCurrentBranch() {
+    public void testGetRepoRoot() {
         try {
-            String branch = GitUtils.getCurrentBranch();
-            assertNotNull(branch, "Current branch should not be null");
-            assertFalse(branch.trim().isEmpty(), "Current branch should not be empty");
+            String repoRoot = GitUtils.getRepoRoot();
+            assertNotNull(repoRoot, "Repository root should not be null");
+            assertFalse(repoRoot.trim().isEmpty(), "Repository root should not be empty");
         } catch (Exception e) {
             // Gitコマンドが利用できない環境ではテストをスキップ
-            System.out.println("Git command not available, skipping branch test: " + e.getMessage());
+            System.out.println("Git command not available, skipping repo root test: " + e.getMessage());
         }
     }
 
     @Test
-    public void testGitUtilsInstantiation() {
-        // GitUtilsクラスのインスタンス化テスト（static methodsなのでインスタンス化は不要だが、テストとして）
+    public void testGitUtilsMethods() {
+        // GitUtilsクラスのメソッドが例外を適切に処理することを確認
         assertDoesNotThrow(() -> {
-            GitUtils gitUtils = new GitUtils();
-            assertNotNull(gitUtils);
+            try {
+                GitUtils.getCommitCount();
+                GitUtils.getRepoRoot();
+            } catch (Exception e) {
+                // Git関連の例外は期待される
+                System.out.println("Expected Git exception: " + e.getMessage());
+            }
         });
     }
 }

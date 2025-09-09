@@ -1,57 +1,38 @@
 package main;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class GitUtils {
 
-    public static int getCommitCount() throws IOException, InterruptedException {
+    /** 現在 HEAD の総コミット数を取得 */
+    public static int getCommitCount() throws Exception {
         ProcessBuilder pb = new ProcessBuilder("git", "rev-list", "--count", "HEAD");
-        Process process = pb.start();
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String output = reader.readLine();
-            if (output != null && !output.trim().isEmpty()) {
-                return Integer.parseInt(output.trim());
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            String line = br.readLine();
+            int exit = p.waitFor();
+            if (exit != 0 || line == null) {
+                throw new IllegalStateException("git からコミット数を取得できません。git 管理下で実行してください。");
             }
-        }
-
-        int exitCode = process.waitFor();
-        if (exitCode != 0) {
-            throw new IOException("Git command failed with exit code: " + exitCode);
-        }
-
-        return 0;
-    }
-
-    public static boolean isGitRepository() {
-        try {
-            ProcessBuilder pb = new ProcessBuilder("git", "rev-parse", "--git-dir");
-            Process process = pb.start();
-            int exitCode = process.waitFor();
-            return exitCode == 0;
-        } catch (IOException | InterruptedException e) {
-            return false;
+            return Integer.parseInt(line.trim());
         }
     }
 
-    public static String getCurrentBranch() throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder("git", "branch", "--show-current");
-        Process process = pb.start();
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String output = reader.readLine();
-            if (output != null && !output.trim().isEmpty()) {
-                return output.trim();
-            }
+    /** 実行場所に依存せず、対象 git リポジトリのルートパスを返す */
+    public static String getRepoRoot() throws Exception {
+        ProcessBuilder pb = new ProcessBuilder("git", "rev-parse", "--show-toplevel");
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+        String root;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            root = br.readLine();
         }
-
-        int exitCode = process.waitFor();
-        if (exitCode != 0) {
-            throw new IOException("Git command failed with exit code: " + exitCode);
+        int exit = p.waitFor();
+        if (exit != 0 || root == null || root.isEmpty()) {
+            throw new IllegalStateException("git リポジトリのルートを取得できません。");
         }
-
-        return "unknown";
+        return root.trim();
     }
 }

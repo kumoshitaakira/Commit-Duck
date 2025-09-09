@@ -131,6 +131,20 @@ Commit-Duck/
     ├─ DuckState.java   # 状態(コミット数/ステージ)の読み書き管理
     ├─ Evolution.java   # コミット数→進化段階(ステージ)ロジック
     └─ GitUtils.java    # Git コミット数取得など Git 関連ユーティリティ
+  └─ test/
+    ├─ DuckCliTest.java      # CLI機能のテスト
+    ├─ DuckStateTest.java    # 状態管理のテスト
+    ├─ EvolutionTest.java    # 進化ロジックのテスト
+    └─ GitUtilsTest.java     # Git操作のテスト
+  assets/
+    └─ demo.md          # アスキーアートなどのリソース配置場所
+build/
+  └─ classes/java/main/  # ビルド成果物配置場所 (実行可能クラス)
+  └─ classes/java/test/   # テストクラスのビルド成果物配置場所
+  └─ libs/                # ビルド成果物配置場所 (JARファイル)
+  └─ reports/             # テストレポート配置場所
+  └─ tmp/                 # ビルド一時ファイル配置場所
+  └─ ...                  # その他 Gradle ビルド関連ファイル
 ```
 
 ビルド/実行方法や Java の配置はプロジェクト進行に合わせて調整してください。`duck` / `duck.bat` から `java` コマンドで上記クラスを呼び出す想定です。

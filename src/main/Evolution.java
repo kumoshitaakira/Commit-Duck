@@ -1,51 +1,72 @@
 package main;
 
 public class Evolution {
-
     public enum Stage {
-        EGG("🥚", 0, 4),
-        DUCKLING("🐣", 5, 9),
-        TEEN("🦆", 10, 24),
-        ADULT("🦆", 25, 49),
-        LEGEND("🦆✨", 50, Integer.MAX_VALUE);
+        EGG, DUCKLING, TEEN, ADULT, LEGEND
+    }
 
-        private final String emoji;
-        private final int minCommits;
-        private final int maxCommits;
+    public static Stage decideStage(int commitCount) {
+        if (commitCount < 5)
+            return Stage.EGG;
+        if (commitCount < 10)
+            return Stage.DUCKLING;
+        if (commitCount < 25)
+            return Stage.TEEN;
+        if (commitCount < 50)
+            return Stage.ADULT;
+        return Stage.LEGEND;
+    }
 
-        Stage(String emoji, int minCommits, int maxCommits) {
-            this.emoji = emoji;
-            this.minCommits = minCommits;
-            this.maxCommits = maxCommits;
-        }
-
-        public String getEmoji() {
-            return emoji;
-        }
-
-        public int getMinCommits() {
-            return minCommits;
-        }
-
-        public int getMaxCommits() {
-            return maxCommits;
+    public static String stageLabel(Stage s) {
+        switch (s) {
+            case EGG:
+                return "Egg";
+            case DUCKLING:
+                return "Duckling";
+            case TEEN:
+                return "Teen";
+            case ADULT:
+                return "Adult";
+            default:
+                return "Legend";
         }
     }
 
-    public static Stage getStageForCommits(int commits) {
-        for (Stage stage : Stage.values()) {
-            if (commits >= stage.getMinCommits() && commits <= stage.getMaxCommits()) {
-                return stage;
-            }
+    public static String ascii(Stage s) {
+        switch (s) {
+            case EGG:
+                return ""
+                        + "   ____  \n"
+                        + "  / __ \\ \n"
+                        + " | |  | |  (egg)\n"
+                        + " | |  | | \n"
+                        + " | |__| | \n"
+                        + "  \\____/  \n";
+            case DUCKLING:
+                return ""
+                        + "  _      \n"
+                        + " (.)_    \n"
+                        + " /|  )   (duckling)\n"
+                        + "  |_/    \n";
+            case TEEN:
+                return ""
+                        + "   __      \n"
+                        + " __(o )___  (teen)\n"
+                        + "/__     _/ \n"
+                        + "  /_/_/_/   \n";
+            case ADULT:
+                return ""
+                        + "     __      \n"
+                        + " __(o )___   (adult)\n"
+                        + "/  ___   / \n"
+                        + "\\_/   \\_/  \n";
+            case LEGEND:
+            default:
+                return ""
+                        + "      __           \n"
+                        + "  ___(o )___  ~*~  (legend)\n"
+                        + " /  /___   /\\      \n"
+                        + "/__/   /__/  \\__   \n";
         }
-        return Stage.EGG; // デフォルト
-    }
-
-    public static String getStageNameForCommits(int commits) {
-        return getStageForCommits(commits).name();
-    }
-
-    public static String getEmojiForCommits(int commits) {
-        return getStageForCommits(commits).getEmoji();
     }
 }
