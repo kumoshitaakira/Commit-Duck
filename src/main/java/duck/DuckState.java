@@ -2,6 +2,8 @@ package duck;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DuckState {
     // リポジトリごとの状態ファイル（<repoRoot>/.duck/state.properties）
@@ -31,17 +33,21 @@ public class DuckState {
         this.stage = stage;
     }
 
-    /** 現在の git リポジトリに対する状態をロード。なければ初期化して作成。 */
+    /**
+     * 現在の git リポジトリに対する状態をロード。なければ初期化して作成。
+     * コミット数取得ロジックを新方式に置換。
+     */
     public static DuckState loadOrNew() {
         try {
-            String root = GitUtils.getRepoRoot(); // 常に"今のリポジトリ"を解決
+            String root = GitUtils.getRepoRoot();
             DuckState st = new DuckState(root);
 
             if (!st.stateDir.exists())
                 st.stateDir.mkdirs();
 
             if (!st.stateFile.exists()) {
-                st.refreshFromGit(); // 初期化時点でコミット数反映
+                int c = getCommitNumberOfTimes();
+                st.set(c, Evolution.decideStage(c));
                 st.save();
                 return st;
             }
@@ -59,10 +65,10 @@ public class DuckState {
             try {
                 String root = GitUtils.getRepoRoot();
                 DuckState st = new DuckState(root);
-                st.set(0, Evolution.decideStage(0));
+                int c = getCommitNumberOfTimes();
+                st.set(c, Evolution.decideStage(c));
                 return st;
             } catch (Exception ignored) {
-                // git 管理外など：呼び出し側で扱う想定
                 DuckState st = new DuckState(new File(".").getAbsolutePath());
                 st.set(0, Evolution.decideStage(0));
                 return st;
@@ -70,10 +76,12 @@ public class DuckState {
         }
     }
 
-    /** 現在のリポジトリのコミット総数から再計算して保存 */
+    /**
+     * 現在のリポジトリのコミット総数から再計算して保存（新ロジック）
+     */
     public void refreshFromGit() {
         try {
-            int c = GitUtils.getCommitCount();
+            int c = getCommitNumberOfTimes();
             set(c, Evolution.decideStage(c));
             save();
         } catch (Exception e) {
@@ -90,5 +98,60 @@ public class DuckState {
         } catch (IOException e) {
             System.err.println("状態保存に失敗: " + e.getMessage());
         }
+    }
+
+    /**
+     * 'git log'コマンドでコミット履歴を取得し、総コミット数を返す
+     */
+    public static int getCommitTotalNumberOfTimes() {
+        int commitCount = 0;
+        try {
+            Process process = Runtime.getRuntime().exec("git log --pretty=oneline");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            Pattern pattern = Pattern.compile("^[a-f0-9]{40} ");
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.find()) {
+                    commitCount++;
+                }
+            }
+            reader.close();
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return commitCount;
+    }
+
+    /**
+     * 初回実行時のコミット数を~/.commit_duck_initial_commit_countで管理し、以降の増加分を返す
+     */
+    public static int getCommitNumberOfTimes() {
+        int initialCommitCount = 0;
+        try {
+            String homeDir = System.getProperty("user.home");
+            File file = new File(homeDir, ".commit_duck_initial_commit_count");
+            Properties props = new Properties();
+            if (file.exists()) {
+                FileInputStream fis = new FileInputStream(file);
+                props.load(fis);
+                fis.close();
+            }
+            String currentDir = new File(".").getCanonicalPath();
+            if (!props.containsKey(currentDir)) {
+                int currentCount = getCommitTotalNumberOfTimes();
+                props.setProperty(currentDir, String.valueOf(currentCount));
+                FileOutputStream fos = new FileOutputStream(file);
+                props.store(fos, null);
+                fos.close();
+                initialCommitCount = currentCount;
+            } else {
+                initialCommitCount = Integer.parseInt(props.getProperty(currentDir));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return getCommitTotalNumberOfTimes() - initialCommitCount;
     }
 }
