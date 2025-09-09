@@ -85,13 +85,27 @@ duck help
 
 以下は本ツールの代表的なディレクトリ/ファイル構成例です。
 
+
+## 🧪 テスト実行
+
+本リポジトリは Gradle を使用し、要求に合わせ `/test` ディレクトリをテストソースとして設定しています。
+
+テスト起動:
+
+```bash
+./gradlew test   # (gradle wrapper 未生成の場合は `gradle test`)
+```
+
+`build/reports/tests/test/index.html` をブラウザで開くと結果を確認できます。
+
+---
 ```
 Commit-Duck/
 ├─ README.md
 ├─ duck             # macOS/Linux 用コマンド (シェルスクリプト実行エントリ)
 ├─ duck.bat         # Windows 用コマンド (バッチ実行エントリ)
 └─ src/
-  └─ duck/
+  └─ main/
     ├─ DuckCli.java     # CLI エントリーポイント / コマンド分岐
     ├─ DuckState.java   # 状態(コミット数/ステージ)の読み書き管理
     ├─ Evolution.java   # コミット数→進化段階(ステージ)ロジック

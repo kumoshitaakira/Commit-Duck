@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="test.DuckCliTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-09-09T10:32:42.236Z" hostname="IT020A69282" time="0.016">
+  <properties/>
+  <testcase name="testRunWithStatusCommand()" classname="test.DuckCliTest" time="0.011"/>
+  <testcase name="testDuckCliIsNotNull()" classname="test.DuckCliTest" time="0.001"/>
+  <testcase name="testDuckCliInitialization()" classname="test.DuckCliTest" time="0.001"/>
+  <testcase name="testRunWithHelpCommand()" classname="test.DuckCliTest" time="0.001"/>
+  <testcase name="testRunWithEmptyArgs()" classname="test.DuckCliTest" time="0.001"/>
+  <system-out><![CDATA[Duck status: ]]>&#x1f986;<![CDATA[
+Duck CLI Commands:
+  status - Show duck status
+  help   - Show this help
+Duck CLI Commands:
+  status - Show duck status
+  help   - Show this help
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
