@@ -1,4 +1,4 @@
-package main;
+package duck;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

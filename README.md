@@ -32,18 +32,32 @@
 
 ## 📦 インストール & セットアップ
 
+### 前提条件
+
+- **Java 17+** が必要です
+- `git` コマンドが利用可能な環境
+
 ### 1. リポジトリを取得
 
 ```bash
-git clone <your-repo-url> duck-term
-cd duck-term
+git clone https://github.com/your-username/Commit-Duck.git
+cd Commit-Duck
 ```
 
 ### 2. 初回セットアップ
 
+**簡単セットアップ（推奨）:**
+
+```bash
+./setup.sh
+```
+
+**手動セットアップ:**
+
 macOS/Linux:
 
 ```bash
+chmod +x duck gradlew
 ./duck install
 ```
 
@@ -53,7 +67,19 @@ Windows (PowerShell/CMD):
 duck.bat install
 ```
 
-これにより `git commit` のたびにコミット数を更新する **post-commit hook** が設定されます。
+これにより以下が実行されます：
+
+1. 環境チェック（Java 17+、Git）
+2. Java プロジェクトが自動的にビルドされます
+3. `git commit` のたびにコミット数を更新する **post-commit hook** が設定されます
+
+### 3. セットアップ完了確認
+
+```bash
+./duck status
+```
+
+現在のコミット数とアヒルの進化状態が表示されれば成功です！
 
 ---
 

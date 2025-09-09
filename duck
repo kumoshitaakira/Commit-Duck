@@ -2,15 +2,18 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OUT_DIR="$REPO_DIR/out"
+JAR_FILE="$REPO_DIR/build/libs/Commit-Duck.jar"
 
 build() {
-  mkdir -p "$OUT_DIR"
-  javac -d "$OUT_DIR" "$REPO_DIR"/src/duck/*.java
+  echo "Building with Gradle..."
+  cd "$REPO_DIR"
+  if [ ! -f "$JAR_FILE" ]; then
+    ./gradlew jar -q
+  fi
 }
 
 run_java() {
-  java -cp "$OUT_DIR" duck.DuckCli "$@"
+  java -jar "$JAR_FILE" "$@"
 }
 
 install_hooks() {
@@ -36,11 +39,11 @@ case "${1-}" in
     install_hooks
     ;;
   refresh)
-    [ -d "$OUT_DIR" ] || build
+    build
     run_java refresh
     ;;
   status)
-    [ -d "$OUT_DIR" ] || build
+    build
     run_java status
     ;;
   help|"")

@@ -1,7 +1,7 @@
-package test;
+package duck;
 
-import main.DuckState;
-import main.Evolution;
+import duck.DuckState;
+import duck.Evolution;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

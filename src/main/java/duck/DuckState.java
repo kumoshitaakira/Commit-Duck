@@ -1,4 +1,4 @@
-package main;
+package duck;
 
 import java.io.*;
 import java.util.Properties;
@@ -34,7 +34,7 @@ public class DuckState {
     /** 現在の git リポジトリに対する状態をロード。なければ初期化して作成。 */
     public static DuckState loadOrNew() {
         try {
-            String root = GitUtils.getRepoRoot(); // 常に“今のリポジトリ”を解決
+            String root = GitUtils.getRepoRoot(); // 常に"今のリポジトリ"を解決
             DuckState st = new DuckState(root);
 
             if (!st.stateDir.exists())

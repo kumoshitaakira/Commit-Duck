@@ -1,4 +1,4 @@
-package main;
+package duck;
 
 public class Evolution {
     public enum Stage {

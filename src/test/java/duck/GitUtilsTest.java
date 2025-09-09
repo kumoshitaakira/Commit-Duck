@@ -1,6 +1,6 @@
-package test;
+package duck;
 
-import main.GitUtils;
+import duck.GitUtils;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
