@@ -81,7 +81,28 @@ duck help
 
 ---
 
-## 🗂️ 保存される情報
+## � プロジェクト構成
+
+以下は本ツールの代表的なディレクトリ/ファイル構成例です。
+
+```
+Commit-Duck/
+├─ README.md
+├─ duck             # macOS/Linux 用コマンド (シェルスクリプト実行エントリ)
+├─ duck.bat         # Windows 用コマンド (バッチ実行エントリ)
+└─ src/
+  └─ duck/
+    ├─ DuckCli.java     # CLI エントリーポイント / コマンド分岐
+    ├─ DuckState.java   # 状態(コミット数/ステージ)の読み書き管理
+    ├─ Evolution.java   # コミット数→進化段階(ステージ)ロジック
+    └─ GitUtils.java    # Git コミット数取得など Git 関連ユーティリティ
+```
+
+ビルド/実行方法や Java の配置はプロジェクト進行に合わせて調整してください。`duck` / `duck.bat` から `java` コマンドで上記クラスを呼び出す想定です。
+
+---
+
+## �🗂️ 保存される情報
 
 - 各リポジトリのルートに `.duck/state.properties` を作成
 - その中に以下を保存
