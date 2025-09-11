@@ -19,7 +19,7 @@ public class DuckState {
     private int commits;
     private Evolution.Stage stage;
 
-    private DuckState(String repoRoot) {
+    protected DuckState(String repoRoot) {
         this.stateDir = new File(repoRoot, ".duck");
         this.stateFile = new File(stateDir, "state.properties");
     }
@@ -65,7 +65,13 @@ public class DuckState {
                 p.load(in);
             }
             int c = Integer.parseInt(p.getProperty(PROP_COMMITS, "0"));
-            Evolution.Stage s = Evolution.Stage.valueOf(p.getProperty(PROP_STAGE, DEFAULT_STAGE));
+            String stageName = p.getProperty(PROP_STAGE, DEFAULT_STAGE);
+            Evolution.Stage s;
+            try {
+                s = Enum.valueOf(Evolution.Stage.class, stageName);
+            } catch (IllegalArgumentException e) {
+                s = Enum.valueOf(Evolution.Stage.class, DEFAULT_STAGE);
+            }
             st.set(c, s);
             return st;
         } catch (Exception e) {
