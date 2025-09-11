@@ -7,33 +7,54 @@ import java.nio.file.Paths;
 
 public class Evolution {
     public enum Stage {
-        EGG, DUCKLING, TEEN, ADULT, LEGEND
+        EGG, CRACKED_EGG, HATCHING, DUCKLING, MATCHING, MARRIED, BIRTH, SICKLY, INJURED, DEAD
     }
 
     public static Stage decideStage(int commitCount) {
-        if (commitCount < 5)
+        if (commitCount < 3)
             return Stage.EGG;
+        if (commitCount < 6)
+            return Stage.CRACKED_EGG;
         if (commitCount < 10)
+            return Stage.HATCHING;
+        if (commitCount < 15)
             return Stage.DUCKLING;
         if (commitCount < 25)
-            return Stage.TEEN;
-        if (commitCount < 50)
-            return Stage.ADULT;
-        return Stage.LEGEND;
+            return Stage.MATCHING;
+        if (commitCount < 40)
+            return Stage.MARRIED;
+        if (commitCount < 60)
+            return Stage.BIRTH;
+        if (commitCount < 80)
+            return Stage.SICKLY;
+        if (commitCount < 100)
+            return Stage.INJURED;
+        return Stage.DEAD;
     }
 
     public static String stageLabel(Stage s) {
         switch (s) {
             case EGG:
                 return "Egg";
+            case CRACKED_EGG:
+                return "Cracked Egg";
+            case HATCHING:
+                return "Hatching";
             case DUCKLING:
                 return "Duckling";
-            case TEEN:
-                return "Teen";
-            case ADULT:
-                return "Adult";
+            case MATCHING:
+                return "Meeting";
+            case MARRIED:
+                return "Married";
+            case BIRTH:
+                return "Nesting";
+            case SICKLY:
+                return "Sickly";
+            case INJURED:
+                return "Injured";
+            case DEAD:
             default:
-                return "Legend";
+                return "Deceased";
         }
     }
 
@@ -51,15 +72,26 @@ public class Evolution {
         switch (s) {
             case EGG:
                 return readAsciiFromFile("duck_stage1.txt");
-            case DUCKLING:
+            case CRACKED_EGG:
                 return readAsciiFromFile("duck_stage2.txt");
-            case TEEN:
+            case HATCHING:
                 return readAsciiFromFile("duck_stage3.txt");
-            case ADULT:
+            case DUCKLING:
                 return readAsciiFromFile("duck_stage4.txt");
-            case LEGEND:
-            default:
+            case MATCHING:
                 return readAsciiFromFile("duck_stage5.txt");
+            case MARRIED:
+                return readAsciiFromFile("duck_stage6.txt");
+            case BIRTH:
+                return readAsciiFromFile("duck_stage7.txt");
+            case SICKLY:
+                return readAsciiFromFile("duck_stage8.txt");
+            case INJURED:
+                return readAsciiFromFile("duck_stage8.txt");
+            case DEAD:
+                return readAsciiFromFile("duck_stage8.txt"); // 同じファイルを使用
+            default:
+                return readAsciiFromFile("duck_stage1.txt");
         }
     }
 }
