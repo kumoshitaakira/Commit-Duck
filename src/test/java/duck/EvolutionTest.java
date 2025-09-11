@@ -90,7 +90,7 @@ public class EvolutionTest {
         assertEquals("Cracked Egg", Evolution.stageLabel(Evolution.Stage.CRACKED_EGG));
         assertEquals("Hatching", Evolution.stageLabel(Evolution.Stage.HATCHING));
         assertEquals("Duckling", Evolution.stageLabel(Evolution.Stage.DUCKLING));
-        assertEquals("Meeting", Evolution.stageLabel(Evolution.Stage.MATCHING));
+        assertEquals("Matching", Evolution.stageLabel(Evolution.Stage.MATCHING));
         assertEquals("Married", Evolution.stageLabel(Evolution.Stage.MARRIED));
         assertEquals("Nesting", Evolution.stageLabel(Evolution.Stage.BIRTH));
         assertEquals("Sickly", Evolution.stageLabel(Evolution.Stage.SICKLY));
