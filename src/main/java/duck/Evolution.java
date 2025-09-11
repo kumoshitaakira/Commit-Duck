@@ -43,7 +43,7 @@ public class Evolution {
             case DUCKLING:
                 return "Duckling";
             case MATCHING:
-                return "Meeting";
+                return "Matching";
             case MARRIED:
                 return "Married";
             case BIRTH:
