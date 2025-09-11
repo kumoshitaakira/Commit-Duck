@@ -1,0 +1,30 @@
+"""
+                  .gMM""MMg..  ..gMM""MMga,
+                .M"'      .7MadM"        7WN.
+               d#            WF            TMc
+              (M                            (M
+              (M                            (M
+              (M.                           (M
+               4h                          .M3
+               .Mh.                       .MF
+                 WN,                     .M$
+                  7Ma                  .d#^
+           ..       TMx              .d#^       ...
+         ..MMMN.      TNN.         .NM^       .MMMb.
+        (M"Mb (MNNNNmJ. "MN,    .JMP= ..JNNNNMP`.MP4M
+     .(MM"           ?TMN,~TMm(MM=`.(MM"~          .TMN,.
+   .MM"                 .TN, !"! ..M"                 .TMm.
+ .MB!                     .MN.  .MF                      ?Ma
+.M"                    ..   WN..M$   ..                   .W
+M^                    MMMN   WbM$  .MMM]                    .W
+F      uMMx  ..&N#&x. HMMD   .MF   .HMM$ .&J#N&.  .uMMx       .W
+       MMMM.JM"    (MN,.  ..  M] ..   .JMD    (TN,(MMM]     .W
+,       ``.M@         "TMM@MN.Mh.MYMMM"=        (Mb ``        .W  
+h    ...(NM"  ...(((((((((M@_M@Mp?MN(((((((((..  .TNm(..    .W
+Mh.  (M5? ..NM@""?????uM@ ..MF .MN, .MN??????""MNa,..?HM   .W
+ UM,. ?UMMMMb.......gM#?..M#'    ?MN,.?MNg.,.....MMMMM"' .(M
+a .WMa.     77""""77 .gM#"         ."MNa.,77""""7'     .dM"
+     7"WMggg...ggdM#WM^                4M"MMggg...ggdM"D^
+      ..           .MD                  HN            .
+....JJM=        ..JM=.JNN]          NNm,.TNJ.         TNJ,..
+"""

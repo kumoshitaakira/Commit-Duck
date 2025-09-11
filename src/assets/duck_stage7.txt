@@ -1,0 +1,26 @@
+"""
+                        .gM[
+                   ....M#^MNgg
+              .JMHH""""^ ." (MJ.
+           .JMP`             `"MN,.
+          (M=                    TMm.
+        .M@`                      .TM,
+        M@   .ga.                   .M]
+       (M   (MMM]   ....    ..,      .M,
+       MF    777..M#"""WNa .MMM]      W]
+       M].gggggdMD      ,WN."""^      (]
+       (N(MN,    ` `      4N,         Mb.
+        4N."MMMMMMMMMNNmJ. ("MNNm    JM"TMNNNNNN,
+         ?Mm. TN(..    ~?TMN(((M@  .(M`        (M
+           ?MN..?"MMNN..NM@"!!!! ..M" .....    (M
+             .?TMga....     ....MB"  (B"YMMga,.M]
+                (Mr7""WMMMMM""7'       .("7jMbMF
+             ..  TMa          .g.  .dMBY"THMMMD
+             M#H#N(MMN..       ,TMM5<~~~~.. ?M&
+             Mb  (MNMD"MHMJJ... J#<::::~~...`.M]
+             .MMNNM"`     ``"MMMM$>>;;:~~....`(N
+                          .MM"3~MR=??>::~~...`.M
+                          .TMNNMMMml=1<;_~~...dF
+                              .  .UNmgxz+_-(Jd#
+                                    .77"9"9"7
+"""

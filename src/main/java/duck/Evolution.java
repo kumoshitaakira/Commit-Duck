@@ -1,5 +1,10 @@
 package duck;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Evolution {
     public enum Stage {
         EGG, DUCKLING, TEEN, ADULT, LEGEND
@@ -32,41 +37,29 @@ public class Evolution {
         }
     }
 
+    private static String readAsciiFromFile(String filename) {
+        try {
+            Path filePath = Paths.get("src/assets/" + filename);
+            return Files.readString(filePath);
+        } catch (IOException e) {
+            System.err.println("Warning: Could not read " + filename + ", using fallback ASCII art");
+            return "ASCII art not available";
+        }
+    }
+
     public static String ascii(Stage s) {
         switch (s) {
             case EGG:
-                return ""
-                        + "   ____  \n"
-                        + "  / __ \\ \n"
-                        + " | |  | |  (egg)\n"
-                        + " | |  | | \n"
-                        + " | |__| | \n"
-                        + "  \\____/  \n";
+                return readAsciiFromFile("duck_stage1.txt");
             case DUCKLING:
-                return ""
-                        + "  _      \n"
-                        + " (.)_    \n"
-                        + " /|  )   (duckling)\n"
-                        + "  |_/    \n";
+                return readAsciiFromFile("duck_stage2.txt");
             case TEEN:
-                return ""
-                        + "   __      \n"
-                        + " __(o )___  (teen)\n"
-                        + "/__     _/ \n"
-                        + "  /_/_/_/   \n";
+                return readAsciiFromFile("duck_stage3.txt");
             case ADULT:
-                return ""
-                        + "     __      \n"
-                        + " __(o )___   (adult)\n"
-                        + "/  ___   / \n"
-                        + "\\_/   \\_/  \n";
+                return readAsciiFromFile("duck_stage4.txt");
             case LEGEND:
             default:
-                return ""
-                        + "      __           \n"
-                        + "  ___(o )___  ~*~  (legend)\n"
-                        + " /  /___   /\\      \n"
-                        + "/__/   /__/  \\__   \n";
+                return readAsciiFromFile("duck_stage5.txt");
         }
     }
 }

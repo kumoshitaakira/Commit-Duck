@@ -1,0 +1,33 @@
+"""
+                 .MMe.
+               .MYB-(WHHWN-,.
+            .(HB"`        _7WN,
+          .j#^               .Tm,
+         .M=                   ?N,
+        .#!               .dMR. (N_
+        M%    .MNp .(kMHQJ.TH"   dR
+        M;    .TH3.#>~~~~?Tm+-Ja,jb
+     ..JM]     ..u@~~_-((JJ-(JJM1M:
+.#""T""! M,  (MYC(JgMH9Y77TWM=`.M\  .+,
+(b        Tm, ?T""MaJJJJgkY"-.MD`.JMEjN+..
+,M,.(.#"Y3 .TN&..  `-?~(.(gMMMH9"T8! ?"~Mo
+ ?N(b.?`       ?7"""Y""7gM@!            ?7BN,.
+  ,HgBa... ..JB`      (MMY                  ?Mx.
+    (HNJJ?7?`    ...JMB^                      ?N,
+       ?"TMHHMMMM""(M%   ...                   .Mb
+            .Mf?TMmdF   dMM#`   `       ..      .M,
+             ?MMM@4N:   .""!..kW"YHN,  dMMb      JN.
+                  JN_.(-...dB>~~~~~_TN,?HB=      ,M`
+                  .M[dN+<<<~~~~~~~~~~?N,.        (N.
+                   ?N&.TYMMMMMMMHQaJ.__7WMma.   .M?TBNQgkkQ]
+                    (Wm, (HmJ-~~~~_?TMNgJJ+@`  .H'        .M
+                      (YNg,.?THHmgggHY=`~~   .dD   ..     .M
+                         _TMNgJ....     ...g#=   T""WM(J, d]
+                           .Mp_7"T9WWW"9"=`         7^`d](#
+                        ... .Mm,          (g,       ..M6dF
+                       d#TMNgdMNa..       (TBNmmWW9Tjd#^
+                       ?Ns<;vWM@"THMNg&J-......-JgHMD`
+                         ?HHMMB!       ,WM#MMH9""=
+                                     .dM91<d#
+                                      7MNNNM=
+"""                                      

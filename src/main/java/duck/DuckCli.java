@@ -5,6 +5,7 @@ public class DuckCli {
     private static void printStatus(DuckState st) {
         System.out.println("Commits: " + st.getCommits());
         System.out.println("Stage  : " + Evolution.stageLabel(st.getStage()));
+        //FIXME:txtファイルで呼び出しできるようにする
         System.out.println(Evolution.ascii(st.getStage()));
     }
 
