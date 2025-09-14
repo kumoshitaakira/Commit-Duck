@@ -1,4 +1,3 @@
-"""
                  .MMe.
                .MYB-(WHHWN-,.
             .(HB"`        _7WN,
@@ -30,4 +29,4 @@
                          ?HHMMB!       ,WM#MMH9""=
                                      .dM91<d#
                                       7MNNNM=
-"""                                      
+                                                                          

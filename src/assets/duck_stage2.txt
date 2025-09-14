@@ -1,4 +1,3 @@
-"""
                        ..gdMMMMMgg..
                   ..JM9=!_......._?"TM+.
                .JMB=_~~~_.._._...`.```_TMm.
@@ -21,4 +20,3 @@
              ~TNmAOtOtttlll=???>>>i<::((jN@3
                 .?TMNagAwOOll=?1+&aug#M"?
                      .??"""UMM#"""??
-"""

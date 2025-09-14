@@ -87,9 +87,9 @@ public class Evolution {
             case SICKLY:
                 return readAsciiFromFile("duck_stage8.txt");
             case INJURED:
-                return readAsciiFromFile("duck_stage8.txt");
+                return readAsciiFromFile("duck_stage8.txt");// FIXME:病気になるイラストを２枚追加
             case DEAD:
-                return readAsciiFromFile("duck_stage8.txt"); // 同じファイルを使用
+                return readAsciiFromFile("duck_stage8.txt"); 
             default:
                 return readAsciiFromFile("duck_stage1.txt");
         }

@@ -1,4 +1,3 @@
-"""
                           ...JggQQmgg.,.
                      ..+KHBUI_(tttttttvTMg.
             ..--.. .HB3<>>????1llllllll==zHR
@@ -21,5 +20,4 @@
               7NeOtttttl1+??>;;;::__-(M"                 
                 (WMmgywo_(l==??>;jgKB9!~>.-.
                     `?""B"YYYY""9"`   ?1<+<`
-"""
                                 
