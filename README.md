@@ -1,6 +1,6 @@
 # 🦆 Commit Duck (Java)
 
-**Terminal Duck** is a terminal application that lets you raise a duck for each Git repository. 
+**Commit Duck** is a terminal application that lets you raise a duck for each Git repository. 
 As you make commits, your duck evolves. You can check its status anytime with the `duck status` command.
 
 ---
@@ -105,7 +105,7 @@ Now, your duck will grow automatically with each commit in that repository.
 
 ## 🔄 Update
 
-Terminal Duck provides a comprehensive update feature, updating everything below:
+Commit Duck provides a comprehensive update feature, updating everything below:
 
 ### 📦 What gets updated
 
@@ -292,13 +292,13 @@ User → git commit → git hook → .duck/state.properties → duck status
 
 ---
 
-Enjoy hacking with your terminal duck! 🦆
+Enjoy hacking with your Commit Duck! 🦆
 
 ---
 
 # 🦆 Commit Duck (Java)
 
-**Terminal Duck** は、Git リポジトリごとにアヒルを育てるターミナルアプリです。  
+**Commit Duck** は、Git リポジトリごとにアヒルを育てるターミナルアプリです。  
 コミットを重ねるとアヒルが進化し、`duck status` コマンドでいつでも確認できます。
 
 ---
@@ -403,7 +403,7 @@ duck install
 
 ## 🔄 アップデート
 
-Terminal Duck は包括的なアップデート機能を提供し、以下をすべて更新します：
+Commit Duck は包括的なアップデート機能を提供し、以下をすべて更新します：
 
 ### 📦 アップデート内容
 
