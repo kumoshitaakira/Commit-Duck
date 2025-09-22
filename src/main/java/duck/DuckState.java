@@ -95,15 +95,42 @@ public class DuckState {
 
     /**
      * 現在のリポジトリのコミット総数から再計算して保存（新ロジック）
+     * 
+     * @return ステージが変更された場合はtrue
      */
-    public void refreshFromGit() {
+    public boolean refreshFromGit() {
         try {
             int c = getCommitNumberOfTimes();
-            set(c, Evolution.decideStage(c, this.stage));
+            Evolution.Stage oldStage = this.stage;
+            Evolution.Stage newStage = Evolution.decideStage(c, this.stage);
+            set(c, newStage);
             save();
+
+            // ステージが変更された場合は通知
+            if (oldStage != newStage) {
+                displayStageEvolution(oldStage, newStage);
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             logger.severe("コミット数取得に失敗: " + e.getMessage());
+            return false;
         }
+    }
+
+    /**
+     * ステージ変更時の進化メッセージを表示
+     */
+    private void displayStageEvolution(Evolution.Stage oldStage, Evolution.Stage newStage) {
+        System.out.println();
+        System.out.println("🦆 ===== DUCK EVOLUTION! =====");
+        System.out.println("Your duck has evolved!");
+        System.out.println(Evolution.stageLabel(oldStage) + " → " + Evolution.stageLabel(newStage));
+        System.out.println("Commits: " + this.commits);
+        System.out.println();
+        System.out.println(Evolution.ascii(newStage));
+        System.out.println("==============================");
+        System.out.println();
     }
 
     public void save() {

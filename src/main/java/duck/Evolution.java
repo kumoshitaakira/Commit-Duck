@@ -48,34 +48,17 @@ public class Evolution {
                     idx = stage.ordinal() + 1;
                     continue; // 次のループで次のステージを探す
                 }
+            } else {
+                // 55以上はランダムにSICKLY, INJUREDを返す
+                int r = random.nextInt(2);
+                return switch (r) {
+                    case 0 -> Stage.SICKLY;
+                    case 1 -> Stage.INJURED;
+                    default -> Stage.SICKLY;
+                };
             }
-            // デフォルトは今のステージを返す
-            return stage;
         }
-        // 55以上はランダムにSICKLY, INJURED, DEADを返す
-        int r = random.nextInt(3);
-        return switch (r) {
-            case 0 -> Stage.SICKLY;
-            case 1 -> Stage.INJURED;
-            default -> Stage.DEAD;
-        };
-        // if (commitCount < 3)
-        // return Stage.EGG;
-        // if (commitCount < 5)
-        // return Stage.CRACKED_EGG;
-        // if (commitCount < 8)
-        // return Stage.HATCHING;
-        // if (commitCount < 13)
-        // return Stage.DUCKLING;
-        // if (commitCount < 21)
-        // return Stage.MATCHING;
-        // if (commitCount < 34)
-        // return Stage.MARRIED;
-        // if (commitCount < 55)
-        // return Stage.BIRTH;
-        // if (commitCount < 80)
-        // return random.nextBoolean()? Stage.SICKLY : Stage.INJURED;
-        // return Stage.DEAD;
+        return stage;
     }
 
     public static String stageLabel(Stage s) {
