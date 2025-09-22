@@ -1,5 +1,303 @@
 # 🦆 Terminal Duck (Java)
 
+**Terminal Duck** is a terminal application that lets you raise a duck for each Git repository. 
+As you make commits, your duck evolves. You can check its status anytime with the `duck status` command.
+
+---
+
+## ✨ Features
+
+- **Repository-based Growth**  
+  Each repository stores its own state in `.duck/state.properties`.  
+  You can raise a different duck in each project.
+
+- **Automatic Tracking**  
+  A post-commit hook runs in the background on every `git commit`, automatically updating the commit count.
+
+- **Global Execution**  
+  Once installed, you can use the `duck` command from any directory.
+
+- **Simple Commands**
+
+  - `duck install` … Install the hook in the current repository
+  - `duck status` … Show the current evolution state
+  - `duck refresh` … Recalculate and update the total commit count
+  - `duck help` … Show the list of commands
+
+- **10 Evolution Stages**
+  - 0–2: 🥚 Egg
+  - 3–5: 🐣 Cracked Egg
+  - 6–9: 🐣 Hatching
+  - 10–14: 🦆 Duckling
+  - 15–24: 💕 Matching
+  - 25–39: 💒 Married
+  - 40–59: 🍼 Nesting
+  - 60–79: 🤒 Sickly
+  - 80–99: � Injured
+  - 100+: ☠️ Deceased
+
+---
+
+## 📦 Installation & Setup
+
+### Prerequisites
+
+- **Java 17+** is required
+- `git` command must be available
+
+### 🚀 One-Step Install (Recommended)
+
+**The easiest way:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kumoshitaakira/Commit-Duck/main/install.sh | bash
+```
+
+or
+
+```bash
+wget -qO- https://raw.githubusercontent.com/kumoshitaakira/Commit-Duck/main/install.sh | bash
+```
+
+This will automatically:
+
+- Clone the repository
+- Set up the environment and build
+- Install globally
+- Set up your PATH
+
+### 📋 Manual Installation
+
+#### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/Commit-Duck.git
+cd Commit-Duck
+```
+
+#### 2. Install
+
+**Global install (default, recommended):**
+
+```bash
+./setup.sh
+```
+
+**Local install:**
+
+```bash
+./setup.sh local
+```
+
+For global install, your PATH will be set automatically and you can use the `duck` command right away.
+
+#### 3. Initialize in each repository
+
+In any Git repository, run:
+
+```bash
+duck install
+```
+
+Now, your duck will grow automatically with each commit in that repository.
+
+---
+
+## 🔄 Update
+
+Terminal Duck provides a comprehensive update feature, updating everything below:
+
+### 📦 What gets updated
+
+- **Java source code** (full recompile)
+- **ASCII art files** (all resource files)
+- **Config files**
+- **Execution scripts**
+- **Dependencies**
+
+### 🚀 How to update
+
+#### If globally installed
+
+```bash
+cd /path/to/Commit-Duck
+./update.sh
+```
+
+#### One-step update
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kumoshitaakira/Commit-Duck/main/install.sh | bash
+```
+
+If an existing install is detected, it will run in update mode automatically.
+
+### 🔍 Update details
+
+`update.sh` performs the following:
+
+1. **Update source code**: Pull latest changes from Git
+2. **Clean build**: Delete all build files and rebuild
+3. **Resolve dependencies**: Get the latest libraries
+4. **Resource check**: Ensure ASCII art files exist
+5. **Update files**: Update JAR and scripts
+6. **Detailed report**: Show file sizes and changes
+
+---
+
+## 🚀 Usage
+
+**Quick setup (recommended):**
+
+```bash
+./setup.sh
+```
+
+**Manual setup:**
+
+macOS/Linux:
+
+```bash
+chmod +x duck gradlew
+./duck install
+```
+
+Windows (PowerShell/CMD):
+
+```bat
+duck.bat install
+```
+
+This will:
+
+1. Check your environment (Java 17+, Git)
+2. Automatically build the Java project
+3. Set up a **post-commit hook** to update the commit count on every `git commit`
+
+### 3. Confirm setup
+
+```bash
+./duck status
+```
+
+If you see your current commit count and duck evolution state, setup was successful!
+
+---
+
+## 🚀 How to use
+
+Just develop and commit as usual.
+
+### Check status
+
+```bash
+duck status
+```
+
+### Manually refresh commit count
+
+```bash
+duck refresh
+```
+
+### List commands
+
+```bash
+duck help
+```
+
+---
+
+## 📁 Project Structure
+
+Here is a typical directory/file structure for this tool.
+
+```
+Commit-Duck/
+├─ README.md
+├─ build.gradle         # Gradle build config
+├─ settings.gradle      # Gradle project config
+├─ duck                 # Command for macOS/Linux (shell script entry)
+├─ duck.bat             # Command for Windows (batch entry)
+└─ src/
+   ├─ main/             # Main source code
+   │  ├─ DuckCli.java   # CLI entry point / command dispatcher
+   │  ├─ DuckState.java # State (commit count/stage) management
+   │  ├─ Evolution.java # Commit count → evolution stage logic
+   │  └─ GitUtils.java  # Git utilities (get commit count, etc.)
+   └─ test/             # Test code
+      ├─ DuckCliTest.java      # CLI tests
+      ├─ DuckStateTest.java    # State management tests
+      ├─ EvolutionTest.java    # Evolution logic tests
+      └─ GitUtilsTest.java     # Git utility tests
+```
+
+### Build & Run
+
+```bash
+# Build the project
+gradle build
+
+# Run tests
+gradle test
+
+# Clean build
+gradle clean build
+```
+
+Java class files are generated in `build/classes/java/main`. The `duck` / `duck.bat` scripts call these classes via the `java` command.
+
+---
+
+## 🗂️ Stored Information
+
+- Creates `.duck/state.properties` in the root of each repository
+- Stores the following inside:
+  - `commits`: Current commit count
+  - `stage` : Evolution stage (EGG / DUCKLING / TEEN / ADULT / LEGEND)
+
+Example:
+
+```properties
+commits=12
+stage=TEEN
+```
+
+---
+
+## ⚙️ Internal Workflow
+
+1. Run `git commit`
+2. The `post-commit` hook calls `duck refresh`
+3. Get total commit count with `git rev-list --count HEAD`
+4. Save to `.duck/state.properties`
+5. When `duck status` is run, read the file and show ASCII art
+
+---
+
+## 🖼️ Diagram
+
+```
+User → git commit → git hook → .duck/state.properties → duck status
+```
+
+---
+
+## 📝 Notes
+
+- Each repository has its own independent duck.
+- It is recommended to add the `.duck` directory to `.gitignore`.
+- Requires a working `git` command.
+- **Java 17+** is required (Gradle toolchain is set).
+
+---
+
+Enjoy hacking with your terminal duck! 🦆
+
+---
+
+# 🦆 Terminal Duck (Java)
+
 **Terminal Duck** は、Git リポジトリごとにアヒルを育てるターミナルアプリです。  
 コミットを重ねるとアヒルが進化し、`duck status` コマンドでいつでも確認できます。
 
@@ -210,32 +508,32 @@ duck help
 
 ## 📁 プロジェクト構成
 
-以下は本ツールの代表的なディレクトリ/ファイル構成例です。
+本ツールの典型的なディレクトリ・ファイル構成例です。
 
 ```
 Commit-Duck/
 ├─ README.md
-├─ build.gradle         # Gradle ビルド設定
-├─ settings.gradle      # Gradle プロジェクト設定
-├─ duck                 # macOS/Linux 用コマンド (シェルスクリプト実行エントリ)
-├─ duck.bat             # Windows 用コマンド (バッチ実行エントリ)
+├─ build.gradle         # Gradleビルド設定
+├─ settings.gradle      # Gradleプロジェクト設定
+├─ duck                 # macOS/Linux用コマンド（シェルスクリプト）
+├─ duck.bat             # Windows用コマンド（バッチファイル）
 └─ src/
    ├─ main/             # メインソースコード
-   │  ├─ DuckCli.java   # CLI エントリーポイント / コマンド分岐
-   │  ├─ DuckState.java # 状態(コミット数/ステージ)の読み書き管理
-   │  ├─ Evolution.java # コミット数→進化段階(ステージ)ロジック
-   │  └─ GitUtils.java  # Git コミット数取得など Git 関連ユーティリティ
+   │  ├─ DuckCli.java   # CLIエントリポイント/コマンド分岐
+   │  ├─ DuckState.java # 状態（コミット数/進化段階）管理
+   │  ├─ Evolution.java # コミット数→進化段階ロジック
+   │  └─ GitUtils.java  # Gitユーティリティ（コミット数取得等）
    └─ test/             # テストコード
-      ├─ DuckCliTest.java      # CLI機能のテスト
-      ├─ DuckStateTest.java    # 状態管理のテスト
-      ├─ EvolutionTest.java    # 進化ロジックのテスト
-      └─ GitUtilsTest.java     # Git操作のテスト
+      ├─ DuckCliTest.java      # CLIテスト
+      ├─ DuckStateTest.java    # 状態管理テスト
+      ├─ EvolutionTest.java    # 進化ロジックテスト
+      └─ GitUtilsTest.java     # Gitユーティリティテスト
 ```
 
-### ビルド・実行方法
+### ビルド・実行
 
 ```bash
-# プロジェクトのビルド
+# ビルド
 gradle build
 
 # テスト実行
@@ -245,47 +543,18 @@ gradle test
 gradle clean build
 ```
 
-Java の実行可能ファイルは `build/classes/java/main` に生成されます。`duck` / `duck.bat` から `java` コマンドで上記クラスを呼び出す想定です。
-
-```
-Commit-Duck/
-├─ README.md
-├─ duck             # macOS/Linux 用コマンド (シェルスクリプト実行エントリ)
-├─ duck.bat         # Windows 用コマンド (バッチ実行エントリ)
-└─ src/
-  └─ main/
-    ├─ DuckCli.java     # CLI エントリーポイント / コマンド分岐
-    ├─ DuckState.java   # 状態(コミット数/ステージ)の読み書き管理
-    ├─ Evolution.java   # コミット数→進化段階(ステージ)ロジック
-    └─ GitUtils.java    # Git コミット数取得など Git 関連ユーティリティ
-  └─ test/
-    ├─ DuckCliTest.java      # CLI機能のテスト
-    ├─ DuckStateTest.java    # 状態管理のテスト
-    ├─ EvolutionTest.java    # 進化ロジックのテスト
-    └─ GitUtilsTest.java     # Git操作のテスト
-  assets/
-    └─ demo.md          # アスキーアートなどのリソース配置場所
-build/
-  └─ classes/java/main/  # ビルド成果物配置場所 (実行可能クラス)
-  └─ classes/java/test/   # テストクラスのビルド成果物配置場所
-  └─ libs/                # ビルド成果物配置場所 (JARファイル)
-  └─ reports/             # テストレポート配置場所
-  └─ tmp/                 # ビルド一時ファイル配置場所
-  └─ ...                  # その他 Gradle ビルド関連ファイル
-```
-
-ビルド/実行方法や Java の配置はプロジェクト進行に合わせて調整してください。`duck` / `duck.bat` から `java` コマンドで上記クラスを呼び出す想定です。
+Javaクラスファイルは `build/classes/java/main` に生成されます。`duck` / `duck.bat` スクリプトがこれらのクラスを `java` コマンド経由で呼び出します。
 
 ---
 
-## �🗂️ 保存される情報
+## 🗂️ 保存情報
 
-- 各リポジトリのルートに `.duck/state.properties` を作成
-- その中に以下を保存
+- 各リポジトリ直下に `.duck/state.properties` を作成
+- 以下の情報を保存：
   - `commits`: 現在のコミット数
   - `stage` : 進化段階（EGG / DUCKLING / TEEN / ADULT / LEGEND）
 
-例:
+例：
 
 ```properties
 commits=12
@@ -294,31 +563,31 @@ stage=TEEN
 
 ---
 
-## ⚙️ 内部動作
+## ⚙️ 内部処理フロー
 
 1. `git commit` 実行
-2. `post-commit` hook が `duck refresh` を呼び出す
-3. `git rev-list --count HEAD` で総コミット数を取得
+2. post-commit hook が `duck refresh` を呼び出し
+3. `git rev-list --count HEAD` でコミット数取得
 4. `.duck/state.properties` に保存
-5. `duck status` 実行時に読み込み → アスキーアート表示
+5. `duck status` 実行時にファイルを読み込みアスキーアート表示
 
 ---
 
-## 🖼️ イメージ図
+## 🖼️ 図解
 
 ```
-ユーザ → git commit → git hook → .duck/state.properties → duck status
+ユーザー → git commit → git hook → .duck/state.properties → duck status
 ```
 
 ---
 
 ## 📝 注意事項
 
-- 各リポジトリに独立したアヒルが存在します。
-- `.duck` ディレクトリは `.gitignore` することを推奨します。
-- `git` コマンドが利用可能な環境で動作します。
-- **Java 17+** が必要です（Gradle toolchain 設定済み）。
+- 各リポジトリごとに独立したアヒルが存在します
+- `.duck` ディレクトリは `.gitignore` への追加を推奨します
+- `git` コマンドが利用可能な環境が必要です
+- **Java 17+** が必要です（Gradle toolchain 設定済み）
 
 ---
 
-Enjoy hacking with your terminal duck! 🦆
+ターミナルダックと一緒に楽しい開発を！🦆
