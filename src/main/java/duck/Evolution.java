@@ -41,8 +41,16 @@ public class Evolution {
         
         Calendar startCal = Calendar.getInstance();
         startCal.setTime(startDate);
+        startCal.set(Calendar.HOUR_OF_DAY, 0);
+        startCal.set(Calendar.MINUTE, 0);
+        startCal.set(Calendar.SECOND, 0);
+        startCal.set(Calendar.MILLISECOND, 0);
         
         Calendar currentCal = Calendar.getInstance();
+        currentCal.set(Calendar.HOUR_OF_DAY, 0);
+        currentCal.set(Calendar.MINUTE, 0);
+        currentCal.set(Calendar.SECOND, 0);
+        currentCal.set(Calendar.MILLISECOND, 0);
         
         long diffInMillis = currentCal.getTimeInMillis() - startCal.getTimeInMillis();
         long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);
@@ -61,13 +69,38 @@ public class Evolution {
     public static Stage decideStage(int commitCount, Stage stage, Date lastCommitDate) {
         System.out.println("Last commit date: " + lastCommitDate);
         
+        // まず日付ベースの判定を行う（コミット数に関係なく）
+        if (lastCommitDate != null) {
+            // 7日経ったらDEAD
+            if (hasSevenDaysPassed(lastCommitDate)) {
+                return Stage.DEAD;
+            }
+            
+            // 5日経ったらSICKLY, INJURED
+            if (hasFiveDaysPassed(lastCommitDate)) {
+                int r = random.nextInt(2);
+                return switch (r) {
+                    case 0 -> Stage.SICKLY;
+                    case 1 -> Stage.INJURED;
+                    default -> Stage.SICKLY;
+                };
+            }
+        }
 
-        int idx = -1;
+        // 日付ベースの判定に該当しない場合、コミット数ベースの進化を行う
         if (stage.getStageLimit() != null) {
-            if (idx == stage.ordinal() || commitCount < stage.getStageLimit()) {
+            // 現在のステージの上限に達していない場合は現在のステージを維持
+            if (commitCount < stage.getStageLimit()) {
                 return stage;
             } else {
-                idx = stage.ordinal() + 1;
+                // 上限に達した場合は次のステージに進化
+                Stage[] stages = Stage.values();
+                int currentIndex = stage.ordinal();
+                if (currentIndex + 1 < stages.length) {
+                    return stages[currentIndex + 1];
+                } else {
+                    return stage; // 最後のステージの場合は現在のステージを維持
+                }
             }
         }
         else if(stage == Stage.SICKLY || stage == Stage.INJURED){
@@ -76,42 +109,7 @@ public class Evolution {
         else {
             return Stage.DEAD;
         }
-
-        // 5日経ったらSICKLY, INJURED（lastCommitDateがnullでない場合のみ）
-        if (lastCommitDate != null && hasFiveDaysPassed(lastCommitDate)) {
-            int r = random.nextInt(2);
-            return switch (r) {
-                case 0 -> Stage.SICKLY;
-                case 1 -> Stage.INJURED;
-                default -> Stage.SICKLY;
-            };
-        }
-
-        // 7日経ったらDEAD（lastCommitDateがnullでない場合のみ）
-        if (lastCommitDate != null && hasSevenDaysPassed(lastCommitDate)) {
-            return Stage.DEAD;
-        }
-        
-        return stage; // デフォルトの戻り値
     }
-
-//        if (commitCount < 3)
-//            return Stage.EGG;
-//        if (commitCount < 5)
-//            return Stage.CRACKED_EGG;
-//        if (commitCount < 8)
-//            return Stage.HATCHING;
-//        if (commitCount < 13)
-//            return Stage.DUCKLING;
-//        if (commitCount < 21)
-//            return Stage.MATCHING;
-//        if (commitCount < 34)
-//            return Stage.MARRIED;
-//        if (commitCount < 55)
-//            return Stage.BIRTH;
-//        if (commitCount < 80)
-//            return random.nextBoolean()? Stage.SICKLY : Stage.INJURED;
-//        return Stage.DEAD;
 
     public static String stageLabel(Stage s) {
         switch (s) {
