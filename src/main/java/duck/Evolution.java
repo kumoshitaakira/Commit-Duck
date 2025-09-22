@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
+import java.util.Date;
+import java.util.Calendar;
 
 public class Evolution {
     public enum Stage {
@@ -30,9 +32,36 @@ public class Evolution {
         }
     }
 
-    private static final Random random = new Random();
+    private static final Random random = new Random();  
 
-    public static Stage decideStage(int commitCount, Stage stage) {
+    public static boolean hasDaysPassed(Date startDate, int days) {
+        if (startDate == null) {
+            return false;
+        }
+        
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(startDate);
+        
+        Calendar currentCal = Calendar.getInstance();
+        
+        long diffInMillis = currentCal.getTimeInMillis() - startCal.getTimeInMillis();
+        long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);
+        
+        return diffInDays >= days;
+    }
+
+    public static boolean hasFiveDaysPassed(Date startDate) {
+        return hasDaysPassed(startDate, 5);
+    }
+
+    public static boolean hasSevenDaysPassed(Date startDate) {
+        return hasDaysPassed(startDate, 7);
+    }
+
+    public static Stage decideStage(int commitCount, Stage stage, Date lastCommitDate) {
+        System.out.println("Last commit date: " + lastCommitDate);
+        
+
         int idx = -1;
         if (stage.getStageLimit() != null) {
             if (idx == stage.ordinal() || commitCount < stage.getStageLimit()) {
@@ -48,13 +77,22 @@ public class Evolution {
             return Stage.DEAD;
         }
 
-        // 55以上はランダムにSICKLY, INJURED, DEADを返す
-        int r = random.nextInt(3);
-        return switch (r) {
-            case 0 -> Stage.SICKLY;
-            case 1 -> Stage.INJURED;
-            default -> Stage.SICKLY;
-        };
+        // 5日経ったらSICKLY, INJURED（lastCommitDateがnullでない場合のみ）
+        if (lastCommitDate != null && hasFiveDaysPassed(lastCommitDate)) {
+            int r = random.nextInt(2);
+            return switch (r) {
+                case 0 -> Stage.SICKLY;
+                case 1 -> Stage.INJURED;
+                default -> Stage.SICKLY;
+            };
+        }
+
+        // 7日経ったらDEAD（lastCommitDateがnullでない場合のみ）
+        if (lastCommitDate != null && hasSevenDaysPassed(lastCommitDate)) {
+            return Stage.DEAD;
+        }
+        
+        return stage; // デフォルトの戻り値
     }
 
 //        if (commitCount < 3)
@@ -74,7 +112,6 @@ public class Evolution {
 //        if (commitCount < 80)
 //            return random.nextBoolean()? Stage.SICKLY : Stage.INJURED;
 //        return Stage.DEAD;
-    }
 
     public static String stageLabel(Stage s) {
         switch (s) {

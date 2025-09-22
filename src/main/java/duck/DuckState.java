@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Date;
 
 import duck.Evolution.Stage;
 
@@ -58,7 +59,8 @@ public class DuckState {
 
             if (!st.stateFile.exists()) {
                 int c = getCommitNumberOfTimes();
-                st.set(c, Evolution.decideStage(c, Stage.EGG));
+                Date lastCommitDate = getLastCommitDate();
+                st.set(c, Evolution.decideStage(c, Stage.EGG, lastCommitDate));
                 st.save();
                 return st;
             }
@@ -83,11 +85,13 @@ public class DuckState {
                 String root = GitUtils.getRepoRoot();
                 DuckState st = new DuckState(root);
                 int c = getCommitNumberOfTimes();
-                st.set(c, Evolution.decideStage(c, Stage.EGG));
+                Date lastCommitDate = getLastCommitDate();
+                st.set(c, Evolution.decideStage(c, Stage.EGG, lastCommitDate));
                 return st;
             } catch (Exception ignored) {
                 DuckState st = new DuckState(new File(".").getAbsolutePath());
-                st.set(0, Evolution.decideStage(0, Stage.EGG));
+                Date lastCommitDate = getLastCommitDate();
+                st.set(0, Evolution.decideStage(0, Stage.EGG, lastCommitDate));
                 return st;
             }
         }
@@ -99,7 +103,8 @@ public class DuckState {
     public void refreshFromGit() {
         try {
             int c = getCommitNumberOfTimes();
-            set(c, Evolution.decideStage(c, this.stage));
+            Date lastCommitDate = getLastCommitDate();
+            set(c, Evolution.decideStage(c, this.stage, lastCommitDate));
             save();
         } catch (Exception e) {
             logger.severe("コミット数取得に失敗: " + e.getMessage());
@@ -139,6 +144,28 @@ public class DuckState {
             logger.warning("git log取得失敗: " + e.getMessage());
         }
         return commitCount;
+    }
+
+    /**
+     * 最後のgit commitの日時を取得する
+     */
+    public static Date getLastCommitDate() {
+        try {
+            Process process = Runtime.getRuntime().exec("git log -1 --pretty=format:%ci");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String dateString = reader.readLine();
+            reader.close();
+            process.waitFor();
+            
+            if (dateString != null && !dateString.isEmpty()) {
+                // git logの日時フォーマット: 2023-12-25 10:30:45 +0900
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+                return sdf.parse(dateString);
+            }
+        } catch (IOException | InterruptedException | java.text.ParseException e) {
+            logger.warning("最後のコミット日時取得失敗: " + e.getMessage());
+        }
+        return new Date(); // フォールバックとして現在時刻を返す
     }
 
     /**
