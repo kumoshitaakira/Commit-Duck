@@ -22,7 +22,7 @@ public class Evolution {
         private final Integer stageLimit;
 
         Stage(Integer limit) {
-            this.stageLimit = limit; // EGG=3, CRACKED_EGG=4, ..., DEAD=12
+            this.stageLimit = limit;
         }
 
         public Integer getStageLimit() {
@@ -32,25 +32,31 @@ public class Evolution {
 
     private static final Random random = new Random();
 
-    public static Stage decideStage(int commitCount) {
+    public static Stage decideStage(int commitCount, Stage stage) {
         int idx = -1;
-        for (Stage s : Stage.values()) {
-            Integer limit = s.getStageLimit();
-            if (limit != null) {
-                if (idx == s.ordinal() || commitCount < limit) {
-                    return s;
-                } else {
-                    idx = s.ordinal() + 1;
-                }
+        if (stage.getStageLimit() != null) {
+            if (idx == stage.ordinal() || commitCount < stage.getStageLimit()) {
+                return stage;
+            } else {
+                idx = stage.ordinal() + 1;
             }
         }
+        else if(stage == Stage.SICKLY || stage == Stage.INJURED){
+            return random.nextBoolean() ? Stage.SICKLY : Stage.INJURED;
+        }
+        else {
+            return Stage.DEAD;
+        }
+
         // 55以上はランダムにSICKLY, INJURED, DEADを返す
         int r = random.nextInt(3);
         return switch (r) {
             case 0 -> Stage.SICKLY;
             case 1 -> Stage.INJURED;
-            default -> Stage.DEAD;
+            default -> Stage.SICKLY;
         };
+    }
+
 //        if (commitCount < 3)
 //            return Stage.EGG;
 //        if (commitCount < 5)
