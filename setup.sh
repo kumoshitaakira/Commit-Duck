@@ -60,8 +60,13 @@ echo "✅ Git環境OK"
 echo "実行権限を設定中..."
 chmod +x duck duck.bat gradlew
 
-# JAR ファイルをビルド
+# プロジェクトをビルドして実行可能ディストリビューションを作成
 echo "Terminal Duckをビルド中..."
+echo "  1. プロジェクトをビルド..."
+./gradlew build -q
+echo "  2. 実行可能ディストリビューションを作成..."
+./gradlew installDist -q
+echo "  3. JARファイルを生成..."
 ./gradlew jar -q
 
 # グローバルインストールの場合

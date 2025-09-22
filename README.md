@@ -159,12 +159,14 @@ macOS/Linux:
 
 ```bash
 chmod +x duck gradlew
+./gradlew build installDist
 ./duck install
 ```
 
 Windows (PowerShell/CMD):
 
 ```bat
+gradlew.bat build installDist
 duck.bat install
 ```
 
@@ -236,13 +238,34 @@ Commit-Duck/
 
 ```bash
 # Build the project
-gradle build
+./gradlew build
+
+# Create executable distribution
+./gradlew installDist
 
 # Run tests
-gradle test
+./gradlew test
 
 # Clean build
-gradle clean build
+./gradlew clean build installDist
+```
+
+Complete setup (recommended):
+```bash
+# 1. Build the project
+./gradlew build
+
+# 2. Create executable distribution
+./gradlew installDist
+
+# 3. Use duck commands
+./duck install
+./duck status
+```
+
+Or use automatic setup:
+```bash
+./setup.sh
 ```
 
 Java class files are generated in `build/classes/java/main`. The `duck` / `duck.bat` scripts call these classes via the `java` command.
@@ -457,12 +480,14 @@ macOS/Linux:
 
 ```bash
 chmod +x duck gradlew
+./gradlew build installDist
 ./duck install
 ```
 
 Windows (PowerShell/CMD):
 
 ```bat
+gradlew.bat build installDist
 duck.bat install
 ```
 
@@ -534,13 +559,34 @@ Commit-Duck/
 
 ```bash
 # ビルド
-gradle build
+./gradlew build
+
+# 実行可能ディストリビューション作成
+./gradlew installDist
 
 # テスト実行
-gradle test
+./gradlew test
 
 # クリーンビルド
-gradle clean build
+./gradlew clean build installDist
+```
+
+完全なセットアップ（推奨）:
+```bash
+# 1. プロジェクトをビルド
+./gradlew build
+
+# 2. 実行可能ディストリビューションを作成
+./gradlew installDist
+
+# 3. duckコマンドを使用
+./duck install
+./duck status
+```
+
+または、自動セットアップを使用:
+```bash
+./setup.sh
 ```
 
 Javaクラスファイルは `build/classes/java/main` に生成されます。`duck` / `duck.bat` スクリプトがこれらのクラスを `java` コマンド経由で呼び出します。
