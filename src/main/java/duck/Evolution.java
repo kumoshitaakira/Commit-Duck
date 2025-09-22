@@ -17,8 +17,8 @@ public class Evolution {
         BIRTH(55),
         SICKLY(null),
         INJURED(null),
-        DEAD(null)
-        ;
+        DEAD(null);
+
         private final Integer stageLimit;
 
         Stage(Integer limit) {
@@ -32,17 +32,24 @@ public class Evolution {
 
     private static final Random random = new Random();
 
-    public static Stage decideStage(int commitCount) {
+    public static Stage decideStage(int commitCount, Stage stage) {
         int idx = -1;
         for (Stage s : Stage.values()) {
-            Integer limit = s.getStageLimit();
-            if (limit != null) {
-                if (idx == s.ordinal() || commitCount < limit) {
-                    return s;
-                } else {
-                    idx = s.ordinal() + 1;
+            if (idx == s.ordinal()) { // next stageの進む時のみ
+                return s;
+            }
+            if (stage != s) { // ステージが違う時は以下の処理を行わない
+                continue;
+            }
+            if (stage.getStageLimit() != null) { // ステージの上限が設定されている場合
+                if (commitCount < stage.getStageLimit()) {
+                    return stage;
+                } else { // 次ステージに行ける時
+                    idx = stage.ordinal() + 1;
                 }
             }
+            // デフォルトは今のステージを返す
+            return stage;
         }
         // 55以上はランダムにSICKLY, INJURED, DEADを返す
         int r = random.nextInt(3);
@@ -51,23 +58,23 @@ public class Evolution {
             case 1 -> Stage.INJURED;
             default -> Stage.DEAD;
         };
-//        if (commitCount < 3)
-//            return Stage.EGG;
-//        if (commitCount < 5)
-//            return Stage.CRACKED_EGG;
-//        if (commitCount < 8)
-//            return Stage.HATCHING;
-//        if (commitCount < 13)
-//            return Stage.DUCKLING;
-//        if (commitCount < 21)
-//            return Stage.MATCHING;
-//        if (commitCount < 34)
-//            return Stage.MARRIED;
-//        if (commitCount < 55)
-//            return Stage.BIRTH;
-//        if (commitCount < 80)
-//            return random.nextBoolean()? Stage.SICKLY : Stage.INJURED;
-//        return Stage.DEAD;
+        // if (commitCount < 3)
+        // return Stage.EGG;
+        // if (commitCount < 5)
+        // return Stage.CRACKED_EGG;
+        // if (commitCount < 8)
+        // return Stage.HATCHING;
+        // if (commitCount < 13)
+        // return Stage.DUCKLING;
+        // if (commitCount < 21)
+        // return Stage.MATCHING;
+        // if (commitCount < 34)
+        // return Stage.MARRIED;
+        // if (commitCount < 55)
+        // return Stage.BIRTH;
+        // if (commitCount < 80)
+        // return random.nextBoolean()? Stage.SICKLY : Stage.INJURED;
+        // return Stage.DEAD;
     }
 
     public static String stageLabel(Stage s) {
