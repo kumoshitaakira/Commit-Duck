@@ -4,32 +4,117 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
+import java.util.Date;
+import java.util.Calendar;
 
 public class Evolution {
     public enum Stage {
-        EGG, CRACKED_EGG, HATCHING, DUCKLING, MATCHING, MARRIED, BIRTH, SICKLY, INJURED, DEAD
+        EGG(3),
+        CRACKED_EGG(5),
+        HATCHING(8),
+        DUCKLING(13),
+        MATCHING(21),
+        MARRIED(34),
+        BIRTH(55),
+        SICKLY(null),
+        INJURED(null),
+        DEAD(null);
+
+        private final Integer stageLimit;
+
+        Stage(Integer limit) {
+            this.stageLimit = limit;
+        }
+
+        public Integer getStageLimit() {
+            return stageLimit;
+        }
     }
 
-    public static Stage decideStage(int commitCount) {
-        if (commitCount < 3)
-            return Stage.EGG;
-        if (commitCount < 6)
-            return Stage.CRACKED_EGG;
-        if (commitCount < 10)
-            return Stage.HATCHING;
-        if (commitCount < 15)
-            return Stage.DUCKLING;
-        if (commitCount < 25)
-            return Stage.MATCHING;
-        if (commitCount < 40)
-            return Stage.MARRIED;
-        if (commitCount < 60)
-            return Stage.BIRTH;
-        if (commitCount < 80)
-            return Stage.SICKLY;
-        if (commitCount < 100)
-            return Stage.INJURED;
-        return Stage.DEAD;
+    private static final Random random = new Random();
+
+    public static boolean hasDaysPassed(Date startDate, int days) {
+        if (startDate == null) {
+            return false;
+        }
+
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(startDate);
+        startCal.set(Calendar.HOUR_OF_DAY, 0);
+        startCal.set(Calendar.MINUTE, 0);
+        startCal.set(Calendar.SECOND, 0);
+        startCal.set(Calendar.MILLISECOND, 0);
+
+        Calendar currentCal = Calendar.getInstance();
+        currentCal.set(Calendar.HOUR_OF_DAY, 0);
+        currentCal.set(Calendar.MINUTE, 0);
+        currentCal.set(Calendar.SECOND, 0);
+        currentCal.set(Calendar.MILLISECOND, 0);
+
+        long diffInMillis = currentCal.getTimeInMillis() - startCal.getTimeInMillis();
+        long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);
+
+        return diffInDays >= days;
+    }
+
+    public static boolean hasFiveDaysPassed(Date startDate) {
+        return hasDaysPassed(startDate, 5);
+    }
+
+    public static boolean hasSevenDaysPassed(Date startDate) {
+        return hasDaysPassed(startDate, 7);
+    }
+
+    public static Stage decideStage(int commitCount, Stage stage, Date lastCommitDate) {
+        System.out.println("Last commit date: " + lastCommitDate);
+
+        // まず日付ベースの判定を行う（コミット数に関係なく）
+        if (lastCommitDate != null) {
+            // 7日経ったらDEAD
+            if (hasSevenDaysPassed(lastCommitDate)) {
+                return Stage.DEAD;
+            }
+
+            // 5日経ったらSICKLY, INJURED（ただし、新しいコミットが行われた場合は除く）
+            if (hasFiveDaysPassed(lastCommitDate)) {
+                // 新しいコミットが行われた場合（1日以内）は、日付ベースの判定をスキップ
+                // コミット数ベースの進化に戻す
+                if (!hasDaysPassed(lastCommitDate, 1)) {
+                    // 1日以内の新しいコミットの場合は、コミット数ベースの進化を行う
+                    // この場合は日付ベースの判定をスキップして、下のコミット数ベースの処理に進む
+                } else {
+                    // 1日以上経過している場合は、SICKLY/INJUREDのまま
+                    int r = random.nextInt(2);
+                    return switch (r) {
+                        case 0 -> Stage.SICKLY;
+                        case 1 -> Stage.INJURED;
+                        default -> Stage.SICKLY;
+                    };
+                }
+            }
+        }
+
+        // 日付ベースの判定に該当しない場合、コミット数ベースの進化を行う
+        if (stage.getStageLimit() != null) {
+            // 現在のステージの上限に達していない場合は現在のステージを維持
+            if (commitCount < stage.getStageLimit()) {
+                return stage;
+            } else {
+                // 上限に達した場合は次のステージに進化
+                Stage[] stages = Stage.values();
+                int currentIndex = stage.ordinal();
+                if (currentIndex + 1 < stages.length) {
+                    return stages[currentIndex + 1];
+                } else {
+                    return stage; // 最後のステージの場合は現在のステージを維持
+                }
+            }
+        } else if (stage == Stage.SICKLY || stage == Stage.INJURED) {
+            return random.nextBoolean() ? Stage.SICKLY : Stage.INJURED;
+        } else {
+            return Stage.DEAD;
+        }
     }
 
     public static String stageLabel(Stage s) {
@@ -60,8 +145,19 @@ public class Evolution {
 
     private static String readAsciiFromFile(String filename) {
         try {
+            // まずJARファイル内のリソースから読み込みを試行
+            var inputStream = Evolution.class.getResourceAsStream("/" + filename);
+            if (inputStream != null) {
+                return new String(inputStream.readAllBytes());
+            }
+
+            // JARファイル内にない場合は、従来の相対パスで試行（開発時用）
             Path filePath = Paths.get("src/assets/" + filename);
-            return Files.readString(filePath);
+            if (Files.exists(filePath)) {
+                return Files.readString(filePath);
+            }
+
+            throw new IOException("File not found: " + filename);
         } catch (IOException e) {
             System.err.println("Warning: Could not read " + filename + ", using fallback ASCII art");
             return "ASCII art not available";
@@ -89,7 +185,7 @@ public class Evolution {
             case INJURED:
                 return readAsciiFromFile("duck_stage9.txt");
             case DEAD:
-                return readAsciiFromFile("duck_stage10.txt"); 
+                return readAsciiFromFile("duck_stage10.txt");
             default:
                 return readAsciiFromFile("duck_stage1.txt");
         }

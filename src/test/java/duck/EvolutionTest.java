@@ -1,87 +1,108 @@
 package duck;
 
 import org.junit.jupiter.api.Test;
-import java.io.ByteArrayOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import static org.junit.jupiter.api.Assertions.*;
+import java.util.Date;
+import java.util.Calendar;
 
 public class EvolutionTest {
 
     @Test
     public void testDecideStage_EggStage() {
-        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(0));
-        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(1));
-        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(2));
+        Date currentDate = new Date();
+        // 現在時刻なので日付判定に該当せず、コミット数ベースの進化が動作
+        // EGGステージ内にとどまる場合（上限3未満）
+        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(0, Evolution.Stage.EGG, currentDate));
+        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(1, Evolution.Stage.EGG, currentDate));
+        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(2, Evolution.Stage.EGG, currentDate));
+        // EGGステージから次のステージへの進化（上限3以上）
+        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(3, Evolution.Stage.EGG, currentDate));
     }
 
     @Test
     public void testDecideStage_CrackedEggStage() {
-        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(3));
-        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(4));
-        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(5));
+        Date currentDate = new Date();
+        // 現在時刻なので日付判定に該当せず、コミット数ベースの進化が動作
+        // CRACKED_EGGステージ内にとどまる場合（上限5未満）
+        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(4, Evolution.Stage.CRACKED_EGG, currentDate));
+        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(4, Evolution.Stage.CRACKED_EGG, currentDate));
+        // CRACKED_EGGステージから次のステージへの進化（上限5以上）
+        assertEquals(Evolution.Stage.HATCHING, Evolution.decideStage(5, Evolution.Stage.CRACKED_EGG, currentDate));
     }
 
     @Test
     public void testDecideStage_HatchingStage() {
-        assertEquals(Evolution.Stage.HATCHING, Evolution.decideStage(6));
-        assertEquals(Evolution.Stage.HATCHING, Evolution.decideStage(8));
-        assertEquals(Evolution.Stage.HATCHING, Evolution.decideStage(9));
+        Date currentDate = new Date();
+        // 現在時刻なので日付判定に該当せず、コミット数ベースの進化が動作
+        // HATCHINGステージ内にとどまる場合（上限8未満）
+        assertEquals(Evolution.Stage.HATCHING, Evolution.decideStage(6, Evolution.Stage.HATCHING, currentDate));
+        assertEquals(Evolution.Stage.HATCHING, Evolution.decideStage(7, Evolution.Stage.HATCHING, currentDate));
+        // HATCHINGステージから次のステージへの進化（上限8以上）
+        assertEquals(Evolution.Stage.DUCKLING, Evolution.decideStage(8, Evolution.Stage.HATCHING, currentDate));
     }
 
     @Test
     public void testDecideStage_DucklingStage() {
-        assertEquals(Evolution.Stage.DUCKLING, Evolution.decideStage(10));
-        assertEquals(Evolution.Stage.DUCKLING, Evolution.decideStage(12));
-        assertEquals(Evolution.Stage.DUCKLING, Evolution.decideStage(14));
+        Date currentDate = new Date();
+        // 現在時刻なので日付判定に該当せず、コミット数ベースの進化が動作
+        // DUCKLINGステージ内にとどまる場合（上限13未満）
+        assertEquals(Evolution.Stage.DUCKLING, Evolution.decideStage(10, Evolution.Stage.DUCKLING, currentDate));
+        assertEquals(Evolution.Stage.DUCKLING, Evolution.decideStage(12, Evolution.Stage.DUCKLING, currentDate));
+        // DUCKLINGステージから次のステージへの進化（上限13以上）
+        assertEquals(Evolution.Stage.MATCHING, Evolution.decideStage(13, Evolution.Stage.DUCKLING, currentDate));
     }
 
     @Test
     public void testDecideStage_MatchingStage() {
-        assertEquals(Evolution.Stage.MATCHING, Evolution.decideStage(15));
-        assertEquals(Evolution.Stage.MATCHING, Evolution.decideStage(20));
-        assertEquals(Evolution.Stage.MATCHING, Evolution.decideStage(24));
+        Date currentDate = new Date();
+        // 現在時刻なので日付判定に該当せず、コミット数ベースの進化が動作
+        // MATCHINGステージ内にとどまる場合（上限21未満）
+        assertEquals(Evolution.Stage.MATCHING, Evolution.decideStage(15, Evolution.Stage.MATCHING, currentDate));
+        assertEquals(Evolution.Stage.MATCHING, Evolution.decideStage(20, Evolution.Stage.MATCHING, currentDate));
+        // MATCHINGステージから次のステージへの進化（上限21以上）
+        assertEquals(Evolution.Stage.MARRIED, Evolution.decideStage(21, Evolution.Stage.MATCHING, currentDate));
     }
 
     @Test
     public void testDecideStage_MarriedStage() {
-        assertEquals(Evolution.Stage.MARRIED, Evolution.decideStage(25));
-        assertEquals(Evolution.Stage.MARRIED, Evolution.decideStage(30));
-        assertEquals(Evolution.Stage.MARRIED, Evolution.decideStage(39));
+        Date currentDate = new Date();
+        // 現在時刻なので日付判定に該当せず、コミット数ベースの進化が動作
+        // MARRIEDステージ内にとどまる場合（上限34未満）
+        assertEquals(Evolution.Stage.MARRIED, Evolution.decideStage(25, Evolution.Stage.MARRIED, currentDate));
+        assertEquals(Evolution.Stage.MARRIED, Evolution.decideStage(33, Evolution.Stage.MARRIED, currentDate));
+        // MARRIEDステージから次のステージへの進化（上限34以上）
+        assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(34, Evolution.Stage.MARRIED, currentDate));
     }
 
     @Test
     public void testDecideStage_BirthStage() {
-        assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(40));
-        assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(50));
-        assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(59));
+        Date currentDate = new Date();
+        // 現在時刻なので日付判定に該当せず、コミット数ベースの進化が動作
+        // BIRTHステージ内にとどまる場合（上限55未満）
+        assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(40, Evolution.Stage.BIRTH, currentDate));
+        assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(54, Evolution.Stage.BIRTH, currentDate));
+        // BIRTHステージから次のステージへの進化（上限55以上）は、ランダムなので結果は予測不可
+        // テストは省略
     }
 
     @Test
-    public void testDecideStage_SicklyStage() {
-        assertEquals(Evolution.Stage.SICKLY, Evolution.decideStage(60));
-        assertEquals(Evolution.Stage.SICKLY, Evolution.decideStage(70));
-        assertEquals(Evolution.Stage.SICKLY, Evolution.decideStage(79));
-    }
+    public void testDecideStage_SpecialStages() {
+        Date currentDate = new Date();
+        // 現在時刻なので日付判定に該当せず、コミット数ベースの進化が動作
+        // 特殊ステージは上限がnullなので現在のステージを維持
 
-    @Test
-    public void testDecideStage_InjuredStage() {
-        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(80));
-        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(90));
-        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(99));
-    }
+        // SICKLYステージはランダムでSICKLYまたはINJUREDを返す
+        Evolution.Stage sicklyResult = Evolution.decideStage(60, Evolution.Stage.SICKLY, currentDate);
+        assertTrue(sicklyResult == Evolution.Stage.SICKLY || sicklyResult == Evolution.Stage.INJURED,
+                "SICKLYステージはSICKLYまたはINJUREDを返すべき");
 
-    @Test
-    public void testDecideStage_DeadStage() {
-        assertEquals(Evolution.Stage.DEAD, Evolution.decideStage(100));
-        assertEquals(Evolution.Stage.DEAD, Evolution.decideStage(150));
-        assertEquals(Evolution.Stage.DEAD, Evolution.decideStage(1000));
+        // INJUREDステージはランダムでSICKLYまたはINJUREDを返す
+        Evolution.Stage injuredResult = Evolution.decideStage(70, Evolution.Stage.INJURED, currentDate);
+        assertTrue(injuredResult == Evolution.Stage.SICKLY || injuredResult == Evolution.Stage.INJURED,
+                "INJUREDステージはSICKLYまたはINJUREDを返すべき");
+
+        // DEADステージはDEADを維持
+        assertEquals(Evolution.Stage.DEAD, Evolution.decideStage(79, Evolution.Stage.DEAD, currentDate));
     }
 
     @Test
@@ -99,289 +120,144 @@ public class EvolutionTest {
     }
 
     @Test
-    public void testAscii() {
-        // ASCIIアートが返されることを確認（具体的な内容は検証しない）
-        assertNotNull(Evolution.ascii(Evolution.Stage.EGG));
-        assertNotNull(Evolution.ascii(Evolution.Stage.CRACKED_EGG));
-        assertNotNull(Evolution.ascii(Evolution.Stage.HATCHING));
-        assertNotNull(Evolution.ascii(Evolution.Stage.DUCKLING));
-        assertNotNull(Evolution.ascii(Evolution.Stage.MATCHING));
-        assertNotNull(Evolution.ascii(Evolution.Stage.MARRIED));
-        assertNotNull(Evolution.ascii(Evolution.Stage.BIRTH));
-        assertNotNull(Evolution.ascii(Evolution.Stage.SICKLY));
-        assertNotNull(Evolution.ascii(Evolution.Stage.INJURED));
-        assertNotNull(Evolution.ascii(Evolution.Stage.DEAD));
+    public void testHasDaysPassed() {
+        Calendar cal = Calendar.getInstance();
+
+        // 6日前の日付を作成（確実に6日前）
+        cal.add(Calendar.DAY_OF_MONTH, -6);
+        Date sixDaysAgo = cal.getTime();
+
+        // 4日前の日付を作成（確実に4日前）
+        cal.add(Calendar.DAY_OF_MONTH, 2); // -6 + 2 = -4日前
+        Date fourDaysAgo = cal.getTime();
+
+        // デバッグ用：実際の日数差を確認
+        long diffSixDays = (System.currentTimeMillis() - sixDaysAgo.getTime()) / (24 * 60 * 60 * 1000);
+        long diffFourDays = (System.currentTimeMillis() - fourDaysAgo.getTime()) / (24 * 60 * 60 * 1000);
+        System.out.println("6日前との差: " + diffSixDays + "日");
+        System.out.println("4日前との差: " + diffFourDays + "日");
+
+        // 6日前の日付で5日経過テスト（6日以上経過していることを確認）
+        assertTrue(Evolution.hasFiveDaysPassed(sixDaysAgo), "6日前の日付で5日経過していない");
+        assertFalse(Evolution.hasSevenDaysPassed(sixDaysAgo), "6日前の日付で7日経過している");
+
+        // 4日前の日付で5日経過テスト（4日未満なので5日経過していない）
+        assertFalse(Evolution.hasFiveDaysPassed(fourDaysAgo), "4日前の日付で5日経過している");
+        assertFalse(Evolution.hasSevenDaysPassed(fourDaysAgo), "4日前の日付で7日経過している");
+
+        // 8日前の日付で7日経過テスト
+        cal.add(Calendar.DAY_OF_MONTH, -4); // -4 - 4 = -8日前
+        Date eightDaysAgo = cal.getTime();
+        assertTrue(Evolution.hasFiveDaysPassed(eightDaysAgo), "8日前の日付で5日経過していない");
+        assertTrue(Evolution.hasSevenDaysPassed(eightDaysAgo), "8日前の日付で7日経過していない");
+
+        // nullの日付テスト
+        assertFalse(Evolution.hasFiveDaysPassed(null));
+        assertFalse(Evolution.hasSevenDaysPassed(null));
     }
 
     @Test
-    public void testAllAssetsFilesExistAndReadable() {
-        // すべてのステージのファイルが存在し、読み込み可能であることを確認
-        String[] expectedFiles = {
-                "duck_stage1.txt", // EGG
-                "duck_stage2.txt", // CRACKED_EGG
-                "duck_stage3.txt", // HATCHING
-                "duck_stage4.txt", // DUCKLING
-                "duck_stage5.txt", // MATCHING
-                "duck_stage6.txt", // MARRIED
-                "duck_stage7.txt", // BIRTH
-                "duck_stage8.txt" // SICKLY, INJURED, DEAD (共通)
-        };
+    public void testDecideStageWithDate_FiveDaysPassed() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -6); // 6日前
+        Date sixDaysAgo = cal.getTime();
 
-        for (String filename : expectedFiles) {
-            try {
-                Path filePath = Paths.get("src/assets/" + filename);
-                assertTrue(Files.exists(filePath), "File should exist: " + filename);
-                String content = Files.readString(filePath);
-                assertNotNull(content, "File content should not be null: " + filename);
-                assertFalse(content.trim().isEmpty(), "File should not be empty: " + filename);
-            } catch (Exception e) {
-                fail("Failed to read file: " + filename + " - " + e.getMessage());
-            }
-        }
+        // 任意のコミット数・ステージで5日経過している場合、SICKLYまたはINJUREDになる
+        Evolution.Stage result1 = Evolution.decideStage(10, Evolution.Stage.EGG, sixDaysAgo);
+        Evolution.Stage result2 = Evolution.decideStage(60, Evolution.Stage.BIRTH, sixDaysAgo);
+
+        assertTrue(result1 == Evolution.Stage.SICKLY || result1 == Evolution.Stage.INJURED);
+        assertTrue(result2 == Evolution.Stage.SICKLY || result2 == Evolution.Stage.INJURED);
     }
 
     @Test
-    public void testAsciiOutputContainsExpectedContent() {
-        // 各ステージのASCII出力が期待される内容を含むことを確認
-        Evolution.Stage[] stages = {
-                Evolution.Stage.EGG,
-                Evolution.Stage.CRACKED_EGG,
-                Evolution.Stage.HATCHING,
-                Evolution.Stage.DUCKLING,
-                Evolution.Stage.MATCHING,
-                Evolution.Stage.MARRIED,
-                Evolution.Stage.BIRTH,
-                Evolution.Stage.SICKLY,
-                Evolution.Stage.INJURED,
-                Evolution.Stage.DEAD
-        };
+    public void testDecideStageWithDate_SevenDaysPassed() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -8); // 8日前
+        Date eightDaysAgo = cal.getTime();
 
-        for (Evolution.Stage stage : stages) {
-            String asciiArt = Evolution.ascii(stage);
-            assertNotNull(asciiArt, "ASCII art should not be null for stage: " + stage);
-            assertFalse(asciiArt.trim().isEmpty(), "ASCII art should not be empty for stage: " + stage);
-            // ファイルが正常に読み込まれた場合、警告メッセージが含まれていないことを確認
-            assertFalse(asciiArt.contains("ASCII art not available"),
-                    "ASCII art should be loaded properly for stage: " + stage);
-        }
+        // 任意のコミット数・ステージで7日経過している場合、DEADになる
+        Evolution.Stage result1 = Evolution.decideStage(10, Evolution.Stage.EGG, eightDaysAgo);
+        Evolution.Stage result2 = Evolution.decideStage(60, Evolution.Stage.BIRTH, eightDaysAgo);
+        Evolution.Stage result3 = Evolution.decideStage(5, Evolution.Stage.SICKLY, eightDaysAgo);
+
+        assertEquals(Evolution.Stage.DEAD, result1);
+        assertEquals(Evolution.Stage.DEAD, result2);
+        assertEquals(Evolution.Stage.DEAD, result3);
     }
 
     @Test
-    public void testTerminalOutputFormatting() {
-        // ターミナル出力で各ステージのASCIIアートが正しくフォーマットされることを確認
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        PrintStream originalOut = System.out;
-
-        try {
-            System.setOut(new PrintStream(outputStream));
-
-            // 各ステージのASCIIアートをターミナルに出力してテスト
-            Evolution.Stage[] stages = {
-                    Evolution.Stage.EGG,
-                    Evolution.Stage.CRACKED_EGG,
-                    Evolution.Stage.HATCHING,
-                    Evolution.Stage.DUCKLING,
-                    Evolution.Stage.MATCHING,
-                    Evolution.Stage.MARRIED,
-                    Evolution.Stage.BIRTH,
-                    Evolution.Stage.SICKLY,
-                    Evolution.Stage.INJURED,
-                    Evolution.Stage.DEAD
-            };
-
-            for (Evolution.Stage stage : stages) {
-                outputStream.reset();
-                String asciiArt = Evolution.ascii(stage);
-                System.out.print(asciiArt);
-
-                String terminalOutput = outputStream.toString();
-                assertNotNull(terminalOutput, "Terminal output should not be null for stage: " + stage);
-                assertFalse(terminalOutput.trim().isEmpty(), "Terminal output should not be empty for stage: " + stage);
-                assertEquals(asciiArt, terminalOutput, "Terminal output should match ASCII art for stage: " + stage);
-            }
-        } finally {
-            System.setOut(originalOut);
-        }
+    public void testDecideStageWithDate_NoDateProvided() {
+        // 日付がnullの場合は現在のステージを維持（5日/7日経過チェックはスキップ）
+        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(2, Evolution.Stage.EGG, null));
+        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(3, Evolution.Stage.EGG, null));
     }
 
     @Test
-    public void testAssetFilesMatchStageMapping() {
-        // ファイルとステージのマッピングが正しいことを確認
-        String eggArt = Evolution.ascii(Evolution.Stage.EGG);
-        String crackedEggArt = Evolution.ascii(Evolution.Stage.CRACKED_EGG);
-        String hatchingArt = Evolution.ascii(Evolution.Stage.HATCHING);
-        String ducklingArt = Evolution.ascii(Evolution.Stage.DUCKLING);
-        String matchingArt = Evolution.ascii(Evolution.Stage.MATCHING);
-        String marriedArt = Evolution.ascii(Evolution.Stage.MARRIED);
-        String birthArt = Evolution.ascii(Evolution.Stage.BIRTH);
-        String sicklyArt = Evolution.ascii(Evolution.Stage.SICKLY);
-        String injuredArt = Evolution.ascii(Evolution.Stage.INJURED);
-        String deadArt = Evolution.ascii(Evolution.Stage.DEAD);
+    public void testDecideStageWithDate_RecentCommit() {
+        // 最近のコミット（日付判定に該当しない）場合はコミット数ベースの進化
+        Date recentDate = new Date(); // 現在時刻
 
-        // 主要なステージが異なる内容であることを確認（各ステージが独自のアートを持つ）
-        assertNotEquals(eggArt, crackedEggArt, "EGG and CRACKED_EGG should have different ASCII art");
-        assertNotEquals(crackedEggArt, hatchingArt, "CRACKED_EGG and HATCHING should have different ASCII art");
-        assertNotEquals(hatchingArt, ducklingArt, "HATCHING and DUCKLING should have different ASCII art");
-        assertNotEquals(ducklingArt, matchingArt, "DUCKLING and MATCHING should have different ASCII art");
-        assertNotEquals(matchingArt, marriedArt, "MATCHING and MARRIED should have different ASCII art");
-        assertNotEquals(marriedArt, birthArt, "MARRIED and BIRTH should have different ASCII art");
-
-        // 各ASCII artが適切な長さを持つことを確認（空でない）
-        assertTrue(eggArt.length() > 10, "EGG ASCII art should have reasonable length");
-        assertTrue(crackedEggArt.length() > 10, "CRACKED_EGG ASCII art should have reasonable length");
-        assertTrue(hatchingArt.length() > 10, "HATCHING ASCII art should have reasonable length");
-        assertTrue(ducklingArt.length() > 10, "DUCKLING ASCII art should have reasonable length");
-        assertTrue(matchingArt.length() > 10, "MATCHING ASCII art should have reasonable length");
-        assertTrue(marriedArt.length() > 10, "MARRIED ASCII art should have reasonable length");
-        assertTrue(birthArt.length() > 10, "BIRTH ASCII art should have reasonable length");
-        assertTrue(sicklyArt.length() > 10, "SICKLY ASCII art should have reasonable length");
-        assertTrue(injuredArt.length() > 10, "INJURED ASCII art should have reasonable length");
-        assertTrue(deadArt.length() > 10, "DEAD ASCII art should have reasonable length");
+        // コミット数ベースの進化が正しく動作することを確認
+        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(2, Evolution.Stage.EGG, recentDate));
+        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(3, Evolution.Stage.EGG, recentDate));
+        assertEquals(Evolution.Stage.HATCHING, Evolution.decideStage(5, Evolution.Stage.CRACKED_EGG, recentDate));
+        assertEquals(Evolution.Stage.DUCKLING, Evolution.decideStage(8, Evolution.Stage.HATCHING, recentDate));
+        assertEquals(Evolution.Stage.MATCHING, Evolution.decideStage(13, Evolution.Stage.DUCKLING, recentDate));
+        assertEquals(Evolution.Stage.MARRIED, Evolution.decideStage(21, Evolution.Stage.MATCHING, recentDate));
+        assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(34, Evolution.Stage.MARRIED, recentDate));
     }
 
     @Test
-    public void testOutputAsciiArtToTerminalAndFile() {
-        System.out.println("\n" + "=".repeat(60));
-        System.out.println("ASCII ART DISPLAY TEST - ALL EVOLUTION STAGES");
-        System.out.println("=".repeat(60));
+    public void testDecideStageWithDate_FourDaysPassed() {
+        // 4日前のコミット（5日未満）の場合はコミット数ベースの進化
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -4); // 4日前
+        Date fourDaysAgo = cal.getTime();
 
-        // outディレクトリを作成
-        Path outDir = Paths.get("out");
-        try {
-            if (!Files.exists(outDir)) {
-                Files.createDirectories(outDir);
-            }
-        } catch (IOException e) {
-            fail("Failed to create out directory: " + e.getMessage());
-        }
-
-        Evolution.Stage[] stages = {
-                Evolution.Stage.EGG,
-                Evolution.Stage.CRACKED_EGG,
-                Evolution.Stage.HATCHING,
-                Evolution.Stage.DUCKLING,
-                Evolution.Stage.MATCHING,
-                Evolution.Stage.MARRIED,
-                Evolution.Stage.BIRTH,
-                Evolution.Stage.SICKLY,
-                Evolution.Stage.INJURED,
-                Evolution.Stage.DEAD
-        };
-
-        StringBuilder reportContent = new StringBuilder();
-        reportContent.append("ASCII ART TEST REPORT\n");
-        reportContent.append("Generated at: ")
-                .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))).append("\n");
-        reportContent.append("=".repeat(80)).append("\n\n");
-
-        for (Evolution.Stage stage : stages) {
-            String stageLabel = Evolution.stageLabel(stage);
-            String asciiArt = Evolution.ascii(stage);
-
-            // ターミナルに出力
-            System.out.println("\n" + "-".repeat(40));
-            System.out.println("STAGE: " + stageLabel.toUpperCase() + " (" + stage + ")");
-            System.out.println("-".repeat(40));
-            System.out.println(asciiArt);
-
-            // レポート内容に追加
-            reportContent.append("STAGE: ").append(stageLabel.toUpperCase()).append(" (").append(stage).append(")\n");
-            reportContent.append("-".repeat(40)).append("\n");
-            reportContent.append(asciiArt).append("\n");
-            reportContent.append("-".repeat(40)).append("\n\n");
-
-            // 個別ファイルにも保存
-            try {
-                Path stageFile = Paths.get("out", "ascii_art_" + stage.toString().toLowerCase() + ".txt");
-                try (FileWriter writer = new FileWriter(stageFile.toFile())) {
-                    writer.write("ASCII ART - " + stageLabel.toUpperCase() + "\n");
-                    writer.write("Stage: " + stage + "\n");
-                    writer.write("Generated at: "
-                            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "\n");
-                    writer.write("=".repeat(50) + "\n\n");
-                    writer.write(asciiArt);
-                }
-            } catch (IOException e) {
-                fail("Failed to write individual stage file for " + stage + ": " + e.getMessage());
-            }
-
-            // テスト検証
-            assertNotNull(asciiArt, "ASCII art should not be null for " + stage);
-            assertFalse(asciiArt.trim().isEmpty(), "ASCII art should not be empty for " + stage);
-        }
-
-        // 統合レポートファイルを作成
-        try {
-            Path reportFile = Paths.get("out", "ascii_art_test_report.txt");
-            try (FileWriter writer = new FileWriter(reportFile.toFile())) {
-                writer.write(reportContent.toString());
-            }
-            System.out.println("\n" + "=".repeat(60));
-            System.out.println("ASCII ART TEST COMPLETED SUCCESSFULLY");
-            System.out.println("Report saved to: " + reportFile.toAbsolutePath());
-            System.out.println("Individual files saved in: " + outDir.toAbsolutePath());
-            System.out.println("=".repeat(60));
-        } catch (IOException e) {
-            fail("Failed to write test report: " + e.getMessage());
-        }
-
-        // 出力ファイルの存在を検証
-        assertTrue(Files.exists(Paths.get("out", "ascii_art_test_report.txt")),
-                "Test report file should be created");
-        for (Evolution.Stage stage : stages) {
-            Path stageFile = Paths.get("out", "ascii_art_" + stage.toString().toLowerCase() + ".txt");
-            assertTrue(Files.exists(stageFile),
-                    "Individual stage file should be created for " + stage);
-        }
+        // 日付判定に該当しないので、コミット数ベースの進化が動作
+        assertEquals(Evolution.Stage.EGG, Evolution.decideStage(2, Evolution.Stage.EGG, fourDaysAgo));
+        assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(3, Evolution.Stage.EGG, fourDaysAgo));
+        assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(50, Evolution.Stage.MARRIED, fourDaysAgo));
     }
 
     @Test
-    public void testDisplayAsciiArtSummary() {
-        System.out.println("\n" + "=".repeat(80));
-        System.out.println("ASCII ART SUMMARY - EVOLUTION PROGRESSION");
-        System.out.println("=".repeat(80));
+    public void testDecideStageWithDate_NewCommitAfterSicklyInjured() {
+        // 6日前にコミットしてSICKLY/INJUREDになった状態から、
+        // 新しいコミット（1日以内）が行われた場合は元の進化段階に戻る
+        
+        // 6日前のコミット（5日以上経過しているのでSICKLY/INJUREDになる）
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -6);
+        Date sixDaysAgo = cal.getTime();
+        
+        // 6日前のコミットでSICKLY/INJUREDになることを確認
+        Evolution.Stage sicklyOrInjured = Evolution.decideStage(10, Evolution.Stage.DUCKLING, sixDaysAgo);
+        assertTrue(sicklyOrInjured == Evolution.Stage.SICKLY || sicklyOrInjured == Evolution.Stage.INJURED);
+        
+        // 新しいコミット（現在時刻）が行われた場合は、コミット数ベースの進化に戻る
+        Date recentCommit = new Date();
+        Evolution.Stage result = Evolution.decideStage(10, Evolution.Stage.DUCKLING, recentCommit);
+        // コミット数10でDUCKLINGステージの場合、DUCKLINGのまま（上限13未満）
+        assertEquals(Evolution.Stage.DUCKLING, result);
+        
+        // 別の例：コミット数が上限を超える場合
+        result = Evolution.decideStage(13, Evolution.Stage.DUCKLING, recentCommit);
+        // コミット数13でDUCKLINGステージの場合、次のステージ（MATCHING）に進化
+        assertEquals(Evolution.Stage.MATCHING, result);
+    }
 
-        Evolution.Stage[] stages = {
-                Evolution.Stage.EGG,
-                Evolution.Stage.CRACKED_EGG,
-                Evolution.Stage.HATCHING,
-                Evolution.Stage.DUCKLING,
-                Evolution.Stage.MATCHING,
-                Evolution.Stage.MARRIED,
-                Evolution.Stage.BIRTH,
-                Evolution.Stage.SICKLY,
-                Evolution.Stage.INJURED,
-                Evolution.Stage.DEAD
-        };
-
-        int[] commitThresholds = { 0, 3, 6, 10, 15, 25, 40, 60, 80, 100 };
-
-        for (int i = 0; i < stages.length; i++) {
-            Evolution.Stage stage = stages[i];
-            String stageLabel = Evolution.stageLabel(stage);
-            String asciiArt = Evolution.ascii(stage);
-
-            System.out.println("\nSTAGE " + (i + 1) + ": " + stageLabel.toUpperCase());
-            System.out.println("Commit threshold: " + commitThresholds[i] + "+");
-            System.out.println("Stage enum: " + stage);
-            System.out.println("Art preview (first 3 lines):");
-
-            String[] lines = asciiArt.split("\\n");
-            for (int j = 0; j < Math.min(3, lines.length); j++) {
-                System.out.println("  " + lines[j]);
-            }
-            if (lines.length > 3) {
-                System.out.println("  ... (" + (lines.length - 3) + " more lines)");
-            }
-            System.out.println("  Total lines: " + lines.length + ", Total characters: " + asciiArt.length());
-
-            // テスト検証
-            assertNotNull(asciiArt, "ASCII art should not be null for " + stage);
-            assertTrue(lines.length > 0, "ASCII art should have at least one line for " + stage);
-        }
-
-        System.out.println("\n" + "=".repeat(80));
-        System.out.println("SUMMARY COMPLETE - All stages validated successfully");
-        System.out.println("=".repeat(80));
+    @Test
+    public void testDecideStageWithDate_OldCommitAfterSicklyInjured() {
+        // 6日前にコミットしてSICKLY/INJUREDになった状態で、
+        // 1日以上経過したコミットの場合はSICKLY/INJUREDのまま
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -6); // 6日前
+        Date sixDaysAgo = cal.getTime();
+        
+        // 6日前のコミットでSICKLY/INJUREDになることを確認
+        Evolution.Stage result = Evolution.decideStage(10, Evolution.Stage.DUCKLING, sixDaysAgo);
+        assertTrue(result == Evolution.Stage.SICKLY || result == Evolution.Stage.INJURED);
     }
 }

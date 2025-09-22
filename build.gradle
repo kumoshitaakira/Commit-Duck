@@ -36,6 +36,9 @@ sourceSets {
         java {
             srcDirs = ['src/main/java']
         }
+        resources {
+            srcDirs = ['src/assets']
+        }
     }
     test {
         java {

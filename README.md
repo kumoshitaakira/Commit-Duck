@@ -14,19 +14,27 @@
 - **自動計測**  
   通常の `git commit` 時に post-commit hook が裏で走り、コミット数を自動で更新。
 
+- **グローバル実行**  
+  一度インストールすれば、どのディレクトリからでも `duck` コマンドが使用可能。
+
 - **簡単な操作**
 
-  - `duck install` … 初期セットアップ（Java ビルド＋ hook 設置）
+  - `duck install` … 現在のリポジトリに hook をインストール
   - `duck status` … 現在の進化状態を表示
   - `duck refresh` … 現在のコミット総数を再計算して更新
   - `duck help` … コマンド一覧を表示
 
-- **進化段階（デフォルト 5 段階）**
-  - 0–4: 🥚 Egg
-  - 5–9: 🐣 Duckling
-  - 10–24: 🦆 Teen
-  - 25–49: 🦆 Adult
-  - 50+: 🦆✨ Legend
+- **10 段階の進化**
+  - 0–2: 🥚 Egg
+  - 3–5: 🐣 Cracked Egg
+  - 6–9: 🐣 Hatching
+  - 10–14: 🦆 Duckling
+  - 15–24: 💕 Matching
+  - 25–39: 💒 Married
+  - 40–59: 🍼 Nesting
+  - 60–79: 🤒 Sickly
+  - 80–99: � Injured
+  - 100+: ☠️ Deceased
 
 ---
 
@@ -37,14 +45,107 @@
 - **Java 17+** が必要です
 - `git` コマンドが利用可能な環境
 
-### 1. リポジトリを取得
+### 🚀 ワンステップインストール（推奨）
+
+**最も簡単な方法:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kumoshitaakira/Commit-Duck/main/install.sh | bash
+```
+
+または
+
+```bash
+wget -qO- https://raw.githubusercontent.com/kumoshitaakira/Commit-Duck/main/install.sh | bash
+```
+
+これだけで以下が自動実行されます：
+
+- リポジトリのクローン
+- 環境構築とビルド
+- グローバルインストール
+- PATH 設定
+
+### 📋 手動インストール
+
+#### 1. リポジトリを取得
 
 ```bash
 git clone https://github.com/your-username/Commit-Duck.git
 cd Commit-Duck
 ```
 
-### 2. 初回セットアップ
+#### 2. インストール
+
+**グローバルインストール（デフォルト・推奨）:**
+
+```bash
+./setup.sh
+```
+
+**ローカルインストール:**
+
+```bash
+./setup.sh local
+```
+
+グローバルインストールの場合、PATH 設定も自動で行われ、すぐに `duck` コマンドが使用可能になります。
+
+#### 3. 各リポジトリでの初期化
+
+任意の Git リポジトリで以下を実行：
+
+```bash
+duck install
+```
+
+これで、そのリポジトリでコミット時に自動的にアヒルが成長します。
+
+---
+
+## 🔄 アップデート
+
+Terminal Duck は包括的なアップデート機能を提供し、以下をすべて更新します：
+
+### 📦 アップデート内容
+
+- **Java ソースコード**（完全再コンパイル）
+- **アスキーアートファイル**（全リソースファイル）
+- **設定ファイル**
+- **実行スクリプト**
+- **依存関係**
+
+### 🚀 アップデート方法
+
+#### グローバルインストール済みの場合
+
+```bash
+cd /path/to/Commit-Duck
+./update.sh
+```
+
+#### ワンステップでアップデート
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kumoshitaakira/Commit-Duck/main/install.sh | bash
+```
+
+既存のインストールが検出された場合、自動的にアップデートモードで実行されます。
+
+### 🔍 アップデート詳細
+
+`update.sh` は以下の処理を実行します：
+
+1. **ソースコードの更新**: Git から最新の変更を取得
+2. **クリーンビルド**: 既存のビルドファイルをすべて削除してから再ビルド
+3. **依存関係の解決**: 最新の依存ライブラリを取得
+4. **リソース検証**: アスキーアートファイルの存在確認
+5. **ファイル更新**: JAR ファイルと実行スクリプトを更新
+6. **詳細レポート**: ファイルサイズや更新内容の変化を表示
+
+---
+
+## 🚀 使い方
 
 **簡単セットアップ（推奨）:**
 
