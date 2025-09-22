@@ -1,1 +1,27 @@
-/Users/a.kumoshita/Documents/work/free/Commit-Duck/build/scripts/Commit-Duck
+#!/bin/bash
+
+# Duck CLI wrapper script
+# This script ensures the correct execution path for the Duck CLI application
+# Supports JAVA_OPTS, COMMIT_DUCK_OPTS, and DEFAULT_JVM_OPTS environment variables
+
+# Get the directory where this script is located
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# Path to the actual Duck CLI executable
+DUCK_CLI="$SCRIPT_DIR/build/install/Commit-Duck/bin/Commit-Duck"
+
+# Check if the executable exists
+if [ ! -f "$DUCK_CLI" ]; then
+    echo "Error: Duck CLI executable not found at $DUCK_CLI"
+    echo "Please run './gradlew build' to build the project."
+    exit 1
+fi
+
+# Support for JVM options via environment variables
+# This maintains compatibility with the original Gradle-generated script
+if [ -n "$JAVA_OPTS" ] || [ -n "$COMMIT_DUCK_OPTS" ] || [ -n "$DEFAULT_JVM_OPTS" ]; then
+    export JAVA_OPTS DEFAULT_JVM_OPTS COMMIT_DUCK_OPTS
+fi
+
+# Execute the Duck CLI with all passed arguments
+exec "$DUCK_CLI" "$@"
