@@ -55,7 +55,8 @@ public class DuckState {
 
             if (!st.stateFile.exists()) {
                 int c = getCommitNumberOfTimes();
-                st.set(c, Evolution.decideStage(c));
+                Evolution.Stage initialStage = Evolution.Stage.EGG;
+                st.set(c, Evolution.decideStage(c, initialStage));
                 st.save();
                 return st;
             }
@@ -80,11 +81,13 @@ public class DuckState {
                 String root = GitUtils.getRepoRoot();
                 DuckState st = new DuckState(root);
                 int c = getCommitNumberOfTimes();
-                st.set(c, Evolution.decideStage(c));
+                Evolution.Stage initialStage = Evolution.Stage.EGG;
+                st.set(c, Evolution.decideStage(c, initialStage));
                 return st;
             } catch (Exception ignored) {
                 DuckState st = new DuckState(new File(".").getAbsolutePath());
-                st.set(0, Evolution.decideStage(0));
+                Evolution.Stage initialStage = Evolution.Stage.EGG;
+                st.set(0, Evolution.decideStage(0, initialStage));
                 return st;
             }
         }
@@ -96,7 +99,7 @@ public class DuckState {
     public void refreshFromGit() {
         try {
             int c = getCommitNumberOfTimes();
-            set(c, Evolution.decideStage(c));
+            set(c, Evolution.decideStage(c, this.stage));
             save();
         } catch (Exception e) {
             logger.severe("コミット数取得に失敗: " + e.getMessage());

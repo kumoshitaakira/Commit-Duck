@@ -46,6 +46,7 @@ public class Evolution {
                     return stage;
                 } else { // 次ステージに行ける時
                     idx = stage.ordinal() + 1;
+                    continue; // 次のループで次のステージを探す
                 }
             }
             // デフォルトは今のステージを返す
