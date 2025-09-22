@@ -42,7 +42,7 @@ public class Evolution {
                 continue;
             }
             if (stage.getStageLimit() != null) { // ステージの上限が設定されている場合
-                if (commitCount < stage.getStageLimit()) {
+                if (commitCount <= stage.getStageLimit()) {
                     return stage;
                 } else { // 次ステージに行ける時
                     idx = stage.ordinal() + 1;
