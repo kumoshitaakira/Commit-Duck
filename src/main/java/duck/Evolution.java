@@ -60,8 +60,19 @@ public class Evolution {
 
     private static String readAsciiFromFile(String filename) {
         try {
+            // まずJARファイル内のリソースから読み込みを試行
+            var inputStream = Evolution.class.getResourceAsStream("/" + filename);
+            if (inputStream != null) {
+                return new String(inputStream.readAllBytes());
+            }
+
+            // JARファイル内にない場合は、従来の相対パスで試行（開発時用）
             Path filePath = Paths.get("src/assets/" + filename);
-            return Files.readString(filePath);
+            if (Files.exists(filePath)) {
+                return Files.readString(filePath);
+            }
+
+            throw new IOException("File not found: " + filename);
         } catch (IOException e) {
             System.err.println("Warning: Could not read " + filename + ", using fallback ASCII art");
             return "ASCII art not available";
@@ -89,7 +100,7 @@ public class Evolution {
             case INJURED:
                 return readAsciiFromFile("duck_stage9.txt");
             case DEAD:
-                return readAsciiFromFile("duck_stage10.txt"); 
+                return readAsciiFromFile("duck_stage10.txt");
             default:
                 return readAsciiFromFile("duck_stage1.txt");
         }
