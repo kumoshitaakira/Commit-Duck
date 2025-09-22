@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
+import java.util.Date;
+import java.util.Calendar;
 
 public class Evolution {
     public enum Stage {
@@ -22,7 +24,7 @@ public class Evolution {
         private final Integer stageLimit;
 
         Stage(Integer limit) {
-            this.stageLimit = limit; // EGG=3, CRACKED_EGG=4, ..., DEAD=12
+            this.stageLimit = limit;
         }
 
         public Integer getStageLimit() {
@@ -32,24 +34,50 @@ public class Evolution {
 
     private static final Random random = new Random();
 
-    public static Stage decideStage(int commitCount, Stage stage) {
-        int idx = -1;
-        for (Stage s : Stage.values()) {
-            if (idx == s.ordinal()) { // next stageの進む時のみ
-                return s;
+    public static boolean hasDaysPassed(Date startDate, int days) {
+        if (startDate == null) {
+            return false;
+        }
+
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(startDate);
+        startCal.set(Calendar.HOUR_OF_DAY, 0);
+        startCal.set(Calendar.MINUTE, 0);
+        startCal.set(Calendar.SECOND, 0);
+        startCal.set(Calendar.MILLISECOND, 0);
+
+        Calendar currentCal = Calendar.getInstance();
+        currentCal.set(Calendar.HOUR_OF_DAY, 0);
+        currentCal.set(Calendar.MINUTE, 0);
+        currentCal.set(Calendar.SECOND, 0);
+        currentCal.set(Calendar.MILLISECOND, 0);
+
+        long diffInMillis = currentCal.getTimeInMillis() - startCal.getTimeInMillis();
+        long diffInDays = diffInMillis / (24 * 60 * 60 * 1000);
+
+        return diffInDays >= days;
+    }
+
+    public static boolean hasFiveDaysPassed(Date startDate) {
+        return hasDaysPassed(startDate, 5);
+    }
+
+    public static boolean hasSevenDaysPassed(Date startDate) {
+        return hasDaysPassed(startDate, 7);
+    }
+
+    public static Stage decideStage(int commitCount, Stage stage, Date lastCommitDate) {
+        System.out.println("Last commit date: " + lastCommitDate);
+
+        // まず日付ベースの判定を行う（コミット数に関係なく）
+        if (lastCommitDate != null) {
+            // 7日経ったらDEAD
+            if (hasSevenDaysPassed(lastCommitDate)) {
+                return Stage.DEAD;
             }
-            if (stage != s) { // ステージが違う時は以下の処理を行わない
-                continue;
-            }
-            if (stage.getStageLimit() != null) { // ステージの上限が設定されている場合
-                if (commitCount <= stage.getStageLimit()) {
-                    return stage;
-                } else { // 次ステージに行ける時
-                    idx = stage.ordinal() + 1;
-                    continue; // 次のループで次のステージを探す
-                }
-            } else {
-                // 55以上はランダムにSICKLY, INJUREDを返す
+
+            // 5日経ったらSICKLY, INJURED
+            if (hasFiveDaysPassed(lastCommitDate)) {
                 int r = random.nextInt(2);
                 return switch (r) {
                     case 0 -> Stage.SICKLY;
@@ -58,7 +86,27 @@ public class Evolution {
                 };
             }
         }
-        return stage;
+
+        // 日付ベースの判定に該当しない場合、コミット数ベースの進化を行う
+        if (stage.getStageLimit() != null) {
+            // 現在のステージの上限に達していない場合は現在のステージを維持
+            if (commitCount < stage.getStageLimit()) {
+                return stage;
+            } else {
+                // 上限に達した場合は次のステージに進化
+                Stage[] stages = Stage.values();
+                int currentIndex = stage.ordinal();
+                if (currentIndex + 1 < stages.length) {
+                    return stages[currentIndex + 1];
+                } else {
+                    return stage; // 最後のステージの場合は現在のステージを維持
+                }
+            }
+        } else if (stage == Stage.SICKLY || stage == Stage.INJURED) {
+            return random.nextBoolean() ? Stage.SICKLY : Stage.INJURED;
+        } else {
+            return Stage.DEAD;
+        }
     }
 
     public static String stageLabel(Stage s) {
