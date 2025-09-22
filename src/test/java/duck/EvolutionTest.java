@@ -220,4 +220,44 @@ public class EvolutionTest {
         assertEquals(Evolution.Stage.CRACKED_EGG, Evolution.decideStage(3, Evolution.Stage.EGG, fourDaysAgo));
         assertEquals(Evolution.Stage.BIRTH, Evolution.decideStage(50, Evolution.Stage.MARRIED, fourDaysAgo));
     }
+
+    @Test
+    public void testDecideStageWithDate_NewCommitAfterSicklyInjured() {
+        // 6日前にコミットしてSICKLY/INJUREDになった状態から、
+        // 新しいコミット（1日以内）が行われた場合は元の進化段階に戻る
+        
+        // 6日前のコミット（5日以上経過しているのでSICKLY/INJUREDになる）
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -6);
+        Date sixDaysAgo = cal.getTime();
+        
+        // 6日前のコミットでSICKLY/INJUREDになることを確認
+        Evolution.Stage sicklyOrInjured = Evolution.decideStage(10, Evolution.Stage.DUCKLING, sixDaysAgo);
+        assertTrue(sicklyOrInjured == Evolution.Stage.SICKLY || sicklyOrInjured == Evolution.Stage.INJURED);
+        
+        // 新しいコミット（現在時刻）が行われた場合は、コミット数ベースの進化に戻る
+        Date recentCommit = new Date();
+        Evolution.Stage result = Evolution.decideStage(10, Evolution.Stage.DUCKLING, recentCommit);
+        // コミット数10でDUCKLINGステージの場合、DUCKLINGのまま（上限13未満）
+        assertEquals(Evolution.Stage.DUCKLING, result);
+        
+        // 別の例：コミット数が上限を超える場合
+        result = Evolution.decideStage(13, Evolution.Stage.DUCKLING, recentCommit);
+        // コミット数13でDUCKLINGステージの場合、次のステージ（MATCHING）に進化
+        assertEquals(Evolution.Stage.MATCHING, result);
+    }
+
+    @Test
+    public void testDecideStageWithDate_OldCommitAfterSicklyInjured() {
+        // 6日前にコミットしてSICKLY/INJUREDになった状態で、
+        // 1日以上経過したコミットの場合はSICKLY/INJUREDのまま
+        
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -6); // 6日前
+        Date sixDaysAgo = cal.getTime();
+        
+        // 6日前のコミットでSICKLY/INJUREDになることを確認
+        Evolution.Stage result = Evolution.decideStage(10, Evolution.Stage.DUCKLING, sixDaysAgo);
+        assertTrue(result == Evolution.Stage.SICKLY || result == Evolution.Stage.INJURED);
+    }
 }

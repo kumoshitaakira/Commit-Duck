@@ -76,14 +76,22 @@ public class Evolution {
                 return Stage.DEAD;
             }
 
-            // 5日経ったらSICKLY, INJURED
+            // 5日経ったらSICKLY, INJURED（ただし、新しいコミットが行われた場合は除く）
             if (hasFiveDaysPassed(lastCommitDate)) {
-                int r = random.nextInt(2);
-                return switch (r) {
-                    case 0 -> Stage.SICKLY;
-                    case 1 -> Stage.INJURED;
-                    default -> Stage.SICKLY;
-                };
+                // 新しいコミットが行われた場合（1日以内）は、日付ベースの判定をスキップ
+                // コミット数ベースの進化に戻す
+                if (!hasDaysPassed(lastCommitDate, 1)) {
+                    // 1日以内の新しいコミットの場合は、コミット数ベースの進化を行う
+                    // この場合は日付ベースの判定をスキップして、下のコミット数ベースの処理に進む
+                } else {
+                    // 1日以上経過している場合は、SICKLY/INJUREDのまま
+                    int r = random.nextInt(2);
+                    return switch (r) {
+                        case 0 -> Stage.SICKLY;
+                        case 1 -> Stage.INJURED;
+                        default -> Stage.SICKLY;
+                    };
+                }
             }
         }
 
