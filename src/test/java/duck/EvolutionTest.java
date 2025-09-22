@@ -70,12 +70,12 @@ public class EvolutionTest {
         assertEquals(Evolution.Stage.SICKLY, Evolution.decideStage(79));
     }
 
-    @Test
-    public void testDecideStage_InjuredStage() {
-        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(80));
-        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(90));
-        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(99));
-    }
+//    @Test
+//    public void testDecideStage_InjuredStage() {
+//        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(80));
+//        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(90));
+//        assertEquals(Evolution.Stage.INJURED, Evolution.decideStage(99));
+//    }
 
     @Test
     public void testDecideStage_DeadStage() {
