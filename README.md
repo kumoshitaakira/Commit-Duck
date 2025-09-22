@@ -1,3 +1,6 @@
+<img width="481" height="444" alt="スクリーンショット 2025-09-22 23 49 03" src="https://github.com/user-attachments/assets/0aece11b-0a1a-470b-b777-676c8f09c61d" />
+
+
 # 🦆 Commit Duck (Java)
 
 **Commit Duck** is a terminal application that lets you raise a duck for each Git repository. 
